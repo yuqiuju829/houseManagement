@@ -19,7 +19,7 @@
                     </div>
                     </transition>
                     <div class="row">
-                        <span class="iconfont icon-ren icon"></span>
+                        <span class="iconfont icon-shoujihao icon"></span>
                         <input v-model="userInfo.userName" class="row_input" type="text" placeholder="请输入您的用户名">
                     </div>
                     <div class="row">
@@ -81,23 +81,46 @@ export default {
                 this.text = '请输入用户名和密码';
                 return;
             }
-            if(this.userInfo.userCode == ''){
+            else if(this.userInfo.userCode == ''){
                 this.show = false;
                 this.text = '请输入验证码';
                 return;
             }
-            if(this.userInfo.userCode != this.verification){
+            else if(this.userInfo.userCode != this.verification){
                 this.show = false;
                 this.text = '验证码输入错误';
+                this.getRandom();
                 return;
             }
-            if(!(/^[1][3456789]\d{9}$/.test(this.userInfo.userName))){
-                this.show = false;
-                this.text = '请输入正确的用户名'
+            // else if(!(/^[1][3456789]\d{9}$/.test(this.userInfo.userName))){
+            //     this.show = false;
+            //     this.text = '请输入正确的用户名'
+            // }
+            else{
+                this.$post("adminLogin",{
+                    phone: this.userInfo.userName,
+                    password: this.userInfo.userPas,
+                    code:this.userInfo.userCode
+                }).then(res=>{
+                    console.log(res);
+                    if(res.code == 0 || res.code == 200){
+                        localStorage.setItem('userInfo',JSON.stringify(res.data));
+                        this.$store.commit('setToken',res.data.token);
+                        console.log(res.data)
+                        this.$message({
+                            message:'登录成功',
+                            type:'success',
+                            duration:1000
+                        });
+                        this.$router.push({
+                            path:'/home'
+                        })
+                    }else{
+                        this.$message.error(res.msg)
+                    }
+                })
             }
-            this.$router.push({
-                // path: '/brokerList'
-            })
+           
 //             this.$post('/login',{
 //                 phone: this.userInfo.userName,
 //                passWord: this.userInfo.userPas
@@ -209,7 +232,7 @@ export default {
     text-align: center;
     line-height: 38px;
     font-size: 20px;
-    color: #b3b3b3;
+    /* color: #b3b3b3; */
 }
 .login_userinfo .row input{
     border: 1px solid #cbcbcb;

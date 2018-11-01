@@ -10,11 +10,11 @@
                 border
                 style="width: 95%;margin:auto">
                 <el-table-column
-                prop="name"
+                prop="nickname"
                 label="姓名">
                 </el-table-column>
                 <el-table-column
-                prop="tel"
+                prop="phone"
                 label="电话">
                 </el-table-column>
                 <el-table-column
@@ -85,20 +85,30 @@ export default {
                     { pattern:/^[^\u4E00-\u9FA5\uF900-\uFA2D\u0020]*$/, message: '无效的密码', trigger: 'blur' },
                 ]
             },
-            tableData: [
-                {
-                    name:'黄大米',
-                    tel:'12315465465',
-                }
-            ],
+            tableData: [],
             currentPage:1,
             pageSize:10,
             total:100
         }
     },
+    mounted(){
+        this.getUsers()
+    },
     methods:{
-        getUser(){
-            console.log('获取用户')
+        getUsers(){
+            this.$get('user/getUserListByRole').then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.tableData = res.data;
+                    this.total = res.data.length;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         // 返回
         goBack(){
@@ -107,12 +117,35 @@ export default {
         // 新建
         add(){
             this.dialogVisible = true;
+            this.form.name = '';
+            this.form.tel = '';
+            this.form.passWord = '';
         },
         // 确定新建
         newBuild(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    alert('submit!');
+                    this.$post("user/addManager",{
+                        nickName:this.form.name,
+                        phone: this.form.tel,
+                        password: this.form.passWord
+                    }).then(res=>{
+                        if(res.code == 0 || res.code == 200){
+                            this.dialogVisible = false;
+                            this.$message({
+                                message:res.msg,
+                                type:'success',
+                                duration:1000
+                            });
+                            this.getUsers()
+                        }else{
+                            this.$message({
+                                message:res.msg,
+                                type:'error',
+                                duration:1000
+                            })
+                        }
+                    })
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -122,12 +155,37 @@ export default {
         // 修改
         handleUpdate(val){
             this.dialogVisible = true;
+            this.isAdd = false;
+            this.isUpdate = true;
+            this.id = val.id;
+            this.form.name = val.nickname;
+            this.form.tel = val.phone
         },
         // 确定修改
         update(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    alert('submit!');
+                    this.$post("user/updateUserByManager",{
+                        cId:this.id,
+                        nickname:this.form.name,
+                        phone:this.form.tel,
+                        password:this.form.passWord
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.code == 0 || res.code == 200){
+                            this.$message({
+                                message:res.msg,
+                                type:'success',
+                                duration:1000
+                            })
+                        }else{
+                            this.$message({
+                                message:res.msg,
+                                type:'error',
+                                duration:1000
+                            })
+                        }
+                    })
                 } else {
                     console.log('error submit!!');
                     return false;

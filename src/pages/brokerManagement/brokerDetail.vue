@@ -478,7 +478,18 @@ export default {
     },
     methods:{
         getBrokerDetail(){
-            console.log('获取经纪人详情')
+            this.$get('user/getUserInfoByWeb',this.$route.query.id).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.data == 200){
+
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         // 返回
         goBack(){

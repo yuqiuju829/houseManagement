@@ -16,7 +16,7 @@
 			<div class="search"></div>
 			<div class="user" @click="downList">
 				<img src="../../static/images/header.jpg" alt="">
-				<span>15983735209</span>
+				<span>{{nick}}</span>
 				<div class="down">
 					<span class="iconfont icon-down"></span>
 					<transition name="fade">
@@ -65,6 +65,7 @@
 			};
 			return {
 				dialogVisible:false,
+				nick:'',
 				form:{
 					oldPas:'',
 					newPas:'',
@@ -112,35 +113,67 @@
 				this.show = !this.show;
 				bus.$emit('headerShow', this.show)
 			},
-
 			//点击下拉列表的每一个选项
 			downClick(index) {
 				switch(index) {
 					case 0: //点击弹出修改密码框
 						this.dialogVisible = true;
+						this.form.oldPas = '';
+						this.form.newPas = '';
+						this.form.confirm = ''
 						break;
 					case 1: //点击新增用户
 						this.$router.push('/newPerson');
 						break;
 					default:
-						// this.$get('/logout', {}).then(res => {
-						// 	//删除localStorage的数据
-						// 	localStorage.removeItem('userInfo');
-						// 	//跳转到登录页面
-						// 	this.$router.push({
-						// 		path: '/'
-						// 	})
-						// });
-						this.$router.push({
-							path: '/login'
-						});
-						break;
+					this.$get('logout').then(res=>{
+						console.log(res);
+						if(res.code == 0 || res.code == 200){
+							localStorage.removeItem('userInfo');
+							this.$message({
+								message:'注销成功',
+								type:'success',
+								dduration:1000
+							});
+							this.$router.push({
+								path:'/'
+							})
+						}else{
+							this.$message({
+								message:res.msg,
+								type:'error',
+								duration:1000
+							})
+						}
+					})
 				}
 			},
 			update(formName){
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						alert('submit!');
+						this.$post('user/modifyPwdForManager',{
+							oldpwd: this.form.oldPas,
+							newpwd: this.form.newPas,
+							password: this.form.confirm
+						}).then(res=>{
+							console.log(res);
+							if(res.code == 0 || res.code == 200){
+								this.$message({
+									message:res.msg,
+									type:'success',
+									duration:1000
+								});
+								// this.$router.push({
+								// 	path:'/'
+								// })
+							}else{
+								this.$message({
+									message:res.msg,
+									type:'error',
+									duration:1000
+								})
+							}
+						})
 					} else {
 						console.log('error submit!!');
 						return false;
@@ -149,10 +182,13 @@
 			}
 		},
 		mounted() {
+			if(JSON.parse(localStorage.getItem('userInfo'))){
+				this.nick = JSON.parse(localStorage.getItem('userInfo')).phone
+			}
 			//获取用户类型
-			// if(JSON.parse(localStorage.getItem('userInfo')).id == '0') {
-			// 	this.userList[1].isShow = true;
-			// }
+			if(JSON.parse(localStorage.getItem('userInfo')).role == '0') {
+				this.userList[1].isShow = true;
+			}
 		}
 
 	}

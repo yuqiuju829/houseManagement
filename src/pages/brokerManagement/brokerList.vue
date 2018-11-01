@@ -154,7 +154,18 @@ export default {
     },
     methods:{
         getBrokerList(){
-            console.log('获取经纪人列表')
+            this.$post('user/getAgentUserList').then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         getCities(){
             console.log('获取城市')
@@ -183,9 +194,12 @@ export default {
             console.log('按条件搜索')
         },
         // 查看详情
-        handleClick(){
+        handleClick(val){
             this.$router.push({
-                path:'/brokerDetail'
+                path:'/brokerDetail',
+                query:{
+                    id:val.id
+                }
             })
         },
         // 分页

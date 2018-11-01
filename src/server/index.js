@@ -29,19 +29,24 @@ Axios.interceptors.request.use(
 Axios.interceptors.response.use(
 	response => {
 		//如果返回1  需要重新登录
-		if(response.data.code == 1) {
-			Message({
-				message:'请重新登录',
-				type: 'warning'
-			});
-			router.replace({
-              path: '/',
-            })
-		}
+		// if(response.data.code == 1) {
+		// 	Message({
+		// 		message:'请重新登录',
+		// 		type: 'warning'
+		// 	});
+		// 	router.replace({
+        //       path: '/',
+        //     })
+		// }
 		return response;
 	},
 	err => {
-		return Promise.reject(err);
+		alert(1)
+		Message({
+            message: err.response.data.msg,
+            type: 'warning'
+        });
+		// return Promise.reject(err);
 	}
 );
 
@@ -69,16 +74,16 @@ export default {
 				if(load || load == undefined) {
 					loading.close();
 				}
-
-				if(res.data.code == 0) {
-					resolve(res.data)
-				} else if(res.data.code == 500) {
-					resolve(res.data);
-					Message({
-						message: res.data.msg,
-						type: 'warning'
-					});
-				}
+				resolve(res.data)
+				// if(res.data.code == 0) {
+				// 	resolve(res.data)
+				// } else if(res.data.code == 500) {
+				// 	resolve(res.data);
+				// 	Message({
+				// 		message: res.data.msg,
+				// 		type: 'warning'
+				// 	});
+				// }
 			}, err => {
 
 				//如果动画为true，返回之后需要关闭动画
@@ -122,15 +127,17 @@ export default {
 					if(load || load == undefined) {
 						loading.close();
 					}
-					if(res.data.code == 0) {
-						resolve(res.data)
-					} else if(res.code == 500) {
-						resolve(res.data);
-						Message({
-							message: res.data.msg,
-							type: 'warning'
-						});
-					}
+					resolve(res.data)
+
+					// if(res.data.code == 0) {
+					// 	resolve(res.data)
+					// } else if(res.code == 500) {
+					// 	resolve(res.data);
+					// 	Message({
+					// 		message: res.data.msg,
+					// 		type: 'warning'
+					// 	});
+					// }
 				}, err => {
 					//如果动画为true，返回之后需要关闭动画
 					if(load || load == undefined) {
@@ -171,16 +178,17 @@ export default {
 				if(load || load == undefined) {
 					loading.close();
 				}
+				resolve(res.data)
 
-				if(res.data.code == 0) {
-					resolve(res.data)
-				} else if(res.data.code == 500) {
-					resolve(res.data);
-					Message({
-						message: res.data.msg,
-						type: 'warning'
-					});
-				}
+				// if(res.data.code == 0) {
+				// 	resolve(res.data)
+				// } else if(res.data.code == 500) {
+				// 	resolve(res.data);
+				// 	Message({
+				// 		message: res.data.msg,
+				// 		type: 'warning'
+				// 	});
+				// }
 			}, err => {
 				//如果动画为true，返回之后需要关闭动画
 				if(load || load == undefined) {

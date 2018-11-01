@@ -328,7 +328,7 @@ export default {
                     arr.push(this.form.name);
                     arr.push(this.form.tel);
                     this.items.push(arr);
-                    if(this.items.length>2){
+                    if(this.items.length>2 && this.form.add == '1'){
                         this.$message({
                             message:'添加的后续人员的数量请保持在2个以内',
                             type:'error',

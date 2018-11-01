@@ -216,7 +216,9 @@ export default {
         }
     },
     mounted(){
-
+        if(JSON.parse(localStorage.getItem('userInfo')).role == '0') {
+            this.routerItems[8].isShow = true;
+        }
     },
     methods: {
         //点击菜单栏是否折叠按钮

@@ -6,13 +6,13 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/login',
+      path: '/',
 			name: 'login',
 			component: resolve => require(['@/pages/login'], resolve)
     },
     
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       redirect: "/waittingBroker",
       component: resolve => require(['@/components/home'], resolve),
