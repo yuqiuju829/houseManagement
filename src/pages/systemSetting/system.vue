@@ -83,12 +83,42 @@ export default {
     },  
     methods:{
         getSetting(){
+            this.$post('sysConfig/getSysConfigByWeb',{
+
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+
+                }else{
+                    this.$message({
+                        message:res.mag,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
             console.log('获取参数设置')
         },
         // 保存
         save(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.$post('sysConfig/addSysConfig').then(res=>{
+                        console.log(res);
+                        if(res.code == 0 || res.code == 200){
+                            this.$message({
+                                message:'保存成功',
+                                type:'success',
+                                duration:1000
+                            })
+                        }else{
+                            this.$message({
+                                message:res.msg,
+                                type:'error',
+                                duration:1000
+                            })
+                        }
+                    })
                     alert('submit!');
                 } else {
                     return false;

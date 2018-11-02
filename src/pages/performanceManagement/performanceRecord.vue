@@ -204,6 +204,20 @@ export default {
     },
     methods:{
         getRecord(){
+            this.$post('performance/queryByRecord',{
+
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
             console.log('业绩记录')
         },
         getCities(){

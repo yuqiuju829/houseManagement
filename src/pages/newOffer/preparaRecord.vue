@@ -165,6 +165,20 @@ export default {
     },
     methods:{
         getRcord(){
+            this.$post('report/queryByRecord',{
+
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
             console.log('获取报备记录')
         },
         getCities(){

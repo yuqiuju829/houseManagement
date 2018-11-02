@@ -4,19 +4,6 @@
         <header>
             <el-row>
                 <el-col :span="7">
-                    <div class="date">
-                        <el-date-picker
-                        v-model="date"
-                        type="daterange"
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        style="width:80%"
-                        @blur="dateSearch" clearable>
-                        </el-date-picker>
-                    </div>
-                </el-col>
-                <el-col :span="7">
                     <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%">
                         <el-option
                         v-for="item in cityLists"
@@ -40,8 +27,14 @@
                 </el-col>
                 <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入账号" style="width:80%;margin-right:30px" v-model="phone" @keyup.enter.native="getBrokerList(phone)" @blur="telSearch()"></el-input>
+                    </div>
+                </el-col>
+                <el-col :span="7">
+                    <div class="search">
+                        <el-input clearable placeholder="请输入姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
+                        
                     </div>
                 </el-col>
             </el-row>
@@ -61,11 +54,11 @@
                 style="width: 95%;margin:auto"
                 :default-sort = "{prop: 'date', order: 'descending'}">
                 <el-table-column
-                prop="name"
+                prop="nickname"
                 label="姓名">
                 </el-table-column>
                 <el-table-column
-                prop="account"
+                prop="phone"
                 label="账号">
                 </el-table-column>
                 <el-table-column
@@ -77,30 +70,30 @@
                 label="区域">
                 </el-table-column>
                 <el-table-column
-                prop="groom"
+                prop="operatorPhone"
                 label="推荐人账号">
                 </el-table-column>
                 <el-table-column
-                prop="houseTotal"
+                prop="onShelfHouses"
                 label="上架房源总量(间)">
                 </el-table-column>
                 <el-table-column
-                prop="teamBNumber"
+                prop="secondGroups"
                 sortable
                 label="B级团队人数(人)">
                 </el-table-column>
                 <el-table-column
-                prop="teamCNumber"
+                prop="thridGroups"
                 sortable
                 label="C级团队人数(人)">
                 </el-table-column>
                 <el-table-column
-                prop="total"
+                prop="totalPerformance"
                 sortable
                 label="实得总业绩(元)">
                 </el-table-column>
                 <el-table-column
-                prop="bill"
+                prop="totalSigneds"
                 sortable
                 label="签单量(单)">
                 </el-table-column>
@@ -130,13 +123,17 @@
 </template>
 
 <script>
+import mainHeader from '../../components/mainHeader'
 export default {
+    components:{
+        mainHeader
+    },
     data(){
         return{
-            date:'',//日期查询
             city:'',//城市查询
             area:'',//区域查询
-            text:'',//条件查询
+            phone:'',//条件查询
+            name:'',//条件查询
             cityLists:[],//城市下拉值
             areaLists:[],//区域下拉值
             tableData: [],
@@ -153,11 +150,21 @@ export default {
         this.getAreas();
     },
     methods:{
-        getBrokerList(){
-            this.$post('user/getAgentUserList').then(res=>{
+        getBrokerList(name=null, city=null,phone= null,area= null){
+            console.log(phone,city,name,area)
+            this.$post('user/getAgentUserList',{
+                phone: phone,
+                city:city,
+                nickname:name,
+                area:area,
+                pageNum:this.currentPage?this.currentPage:'',
+                pageSize:this.pageSize?this.pageSize:1
+            }).then(res=>{
                 console.log(res);
                 if(res.code == 0 || res.code == 200){
-
+                    this.tableData = [];
+                    this.tableData = res.data.list;
+                    this.total = res.data.total;
                 }else{
                     this.$message({
                         message:res.msg,
@@ -177,33 +184,35 @@ export default {
         formatter(row, column) {
             return row.address;
         },
-        // 日期查询
-        dateSearch(){
-            console.log('日期搜索')
-        },
         // 城市查询
-        citySearch(){
-            console.log('城市搜索')
+        citySearch(val){
+            this.getBrokerList(this.city)
         },
         // 区域查询
         areaSearch(){
-            console.log('区域搜索')
+            this.getBrokerList(this.area)
+        },
+        telSearch(){
+            this.getBrokerList(this.phone)
         },
         // 条件查询
         search(){
-            console.log('按条件搜索')
+            this.getBrokerList(this.name)
         },
         // 查看详情
         handleClick(val){
+            console.log(val.cId)
             this.$router.push({
                 path:'/brokerDetail',
                 query:{
-                    id:val.id
+                    id:val.cId
                 }
             })
         },
         // 分页
-        handleCurrentChange(){
+        handleCurrentChange(val){
+            this.currentPage = val;
+            this.getBrokerList()
             console.log('分页')
         },
     }

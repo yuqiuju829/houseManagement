@@ -1,5 +1,8 @@
 <template>
     <div id="ad">
+        <header>
+            <el-button type="primary" plain @click="goBack">返回</el-button>
+        </header>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="上传图片:">
                 <el-upload
@@ -117,6 +120,9 @@ export default {
         }
     },
     methods:{
+        goBack(){
+            this.$router.go(-1)
+        },
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
@@ -147,18 +153,18 @@ export default {
             }
         },
         insertImg(iFile,index){     //上传请求
-            // let formData = new FormData();
-            // formData.append('sort',index);
-            // formData.append('multipartFile',iFile);
-            // this.$post('/slideshowControl/insert',formData,this.$store.state.config).then(res=>{
-            //     if(res.code == 0){
-            //         this.$message({
-            //             type: 'success',
-            //             message: '上传成功!'
-            //         });	
-            //         console.log(this.list)
-            //     }
-            // })
+            let formData = new FormData();
+            formData.append('adContent',this.ruleForm.content);
+            formData.append('adTitle',this.ruleForm.theme);
+            this.$post('advertisement/addAdvertisement',formData,this.$store.state.config).then(res=>{
+                if(res.code == 0){
+                    this.$message({
+                        type: 'success',
+                        message: '上传成功!'
+                    });	
+                    console.log(this.list)
+                }
+            })
         },
         delImg(id,index){     //删除
             // this.$delete('/slideshowControl/deleteById/'+id, {
@@ -182,6 +188,15 @@ export default {
                             duration:1000
                         })
                     }else{
+                        this.$post('advertisement/addAdvertisement',this.$store.state.config).then(res=>{
+                            if(res.code == 0){
+                                this.$message({
+                                    type: 'success',
+                                    message: '上传成功!'
+                                });	
+                                console.log(this.list)
+                            }
+                        })
                         alert('submit!');
                     }
                 } else {
@@ -227,6 +242,9 @@ export default {
 <style scoped>
     .demo-ruleForm{
         padding-top:50px;
+    }
+    .el-button--primary{
+        margin-left: 100px;
     }
 </style>
 

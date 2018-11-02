@@ -34,7 +34,24 @@ export default {
             ]
         }
     },
+    mounted(){
+        this.getAds()
+    },
     methods:{
+        getAds(){
+            this.$post('advertisement/getAdvertisementByWeb',{}).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
+        },
         view(){
             this.$router.push({
                 path:'/advertDetail'

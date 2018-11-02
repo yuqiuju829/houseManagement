@@ -18,7 +18,7 @@
                 border
                 style="width: 95%;margin:auto">
                 <el-table-column
-                prop="sendPerson"
+                prop="nickname"
                 label="发件人">
                 </el-table-column>
                 <el-table-column
@@ -26,7 +26,7 @@
                 label="发件人电话">
                 </el-table-column>
                 <el-table-column
-                prop="time"
+                prop="cdate"
                 label="时间">
                 </el-table-column>
                 <el-table-column
@@ -56,28 +56,7 @@ export default {
     data(){
         return{
             date:'',
-            tableData: [
-                {
-                    sendPerson:'12315465465',
-                    sendTel:'成都',
-                    time: '高新',
-                },
-                {
-                    sendPerson:'12315465465',
-                    sendTel:'成都',
-                    time: '高新',
-                },
-                {
-                    sendPerson:'12315465465',
-                    sendTel:'成都',
-                    time: '高新',
-                },
-                {
-                    sendPerson:'12315465465',
-                    sendTel:'成都',
-                    time: '高新',
-                }
-            ],
+            tableData: [],
             brokerNum:'3000',
             currentNum:'200',
             currentPage:1,
@@ -90,14 +69,32 @@ export default {
     },
     methods:{
         getFeeds(){
+            this.$post('suggestion/queryByRecord',{
+
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.tableData = [];
+                    this.tableData = res.data
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
             console.log('获取所有反馈意见')
         },
         dateSearch(){
             console.log('日期搜索')
         },
-        handleClick(){
+        handleClick(val){
             this.$router.push({
-                path:'/feedDetail'
+                path:'/feedDetail',
+                query:{
+                    id:val.cId
+                }
             })
         },
         handleCurrentChange(){

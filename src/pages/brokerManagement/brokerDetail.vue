@@ -361,7 +361,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('achieveForm')" style="width:80%;margin-left:0">确定</el-button>
+                    <el-button type="primary" @click="submitForm('achieveForm')" style="width:80%;margin-left:0" :data ='data'>确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -370,7 +370,7 @@
         <el-dialog title="录入/扣除奖金" :visible.sync="dialogBonusVisible" width="30%">
             <el-form :model="bonusForm" :rules="rules" ref="bonusForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="操作类型：" prop="bonusRegion">
-                    <el-select v-model="bonusForm.bonusRegion" placeholder="请选择提成来源" style="width:100%;" clearable>
+                    <el-select v-model="bonusForm.bonusRegion" placeholder="请选择操作类型" style="width:100%;" clearable>
                         <el-option label="团队发展奖金" value="1"></el-option>
                         <el-option label="房源发布奖金" value="2"></el-option>
                     </el-select>
@@ -394,6 +394,9 @@
 export default {
     data(){
         return{
+            data:{
+                kind:''
+            },
             staff:'',//操作员工
             staffTel:'',//员工电话
             name:'',//姓名
@@ -478,10 +481,15 @@ export default {
     },
     methods:{
         getBrokerDetail(){
-            this.$get('user/getUserInfoByWeb',this.$route.query.id).then(res=>{
+            console.log(this.$route.query.id)
+            this.$get('user/getUserIntroduce',{id:this.$route.query.id}).then(res=>{
                 console.log(res);
                 if(res.code == 0 || res.data == 200){
-
+                    this.city = res.data.city;
+                    this.area = res.data.area;
+                    this.name = res.data.nickname;
+                    this.tel = res.data.phone;
+                    this.sex = res.data.gender;
                 }else{
                     this.$message({
                         message:res.msg,
@@ -529,13 +537,29 @@ export default {
                     duration:1000
                 })
             }else{
-                this.dialogVisible = false;
-                this.disabled = true;
-                this.$message({
-                    message:'已拉黑',
-                    type:'success',
-                    duration:1000
+                this.$get('user/blackUser',{
+                    id: this.$route.query.id,
+                    blackreason:this.comment
+                }).then(res=>{
+                    console.log(res);
+                    if(res.code == 0 || res.code == 200){
+                        this.dialogVisible = false;
+                        this.disabled = true;
+                        this.$message({
+                            message:'已拉黑',
+                            type:'success',
+                            duration:1000
+                        })
+                        
+                    }else{
+                        this.$message({
+                            message:res.msg,
+                            type:'error',
+                            duration:1000
+                        })
+                    }
                 })
+                
             }
         },
         // 录入业绩
@@ -549,8 +573,29 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    alert('submit!');
-                    this.dialogAchieveVisible = false;
+                    this.$post('performance/addPerformance',{
+                        earnSource:this.achieveForm.region,
+                        contractNo: this.achieveForm.contractNumber,
+                        houseSourceNo:this.achieveForm.houseNumber,
+                        money:this.achieveForm.achieveNumber,
+                        kind:1
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.code == 0 || res.code == 200){
+                            this.dialogAchieveVisible = false;
+                            this.$message({
+                                message:'录入业绩成功',
+                                type:'success',
+                                duration:1000
+                            })
+                        }else{
+                            this.$message({
+                                message:res.msg,
+                                type:'error',
+                                duration:1000
+                            })
+                        }
+                    })
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -576,8 +621,28 @@ export default {
                             duration:1000
                         })
                     }else{
-                        alert('submit!');
-                        this.dialogBonusVisible = false;
+                        this.$post('performance/addPerformance',{
+                            earnSource:this.bonusForm.bonusRegion,                        
+                            money:this.achieveForm.achieveNumber,
+                            kind:2,
+                            operatorStatus:3
+                        }).then(res=>{
+                            console.log(res);
+                            if(res.code == 0 || res.code == 200){
+                                this.dialogBonusVisible= false;
+                                this.$message({
+                                    message:'录入奖金成功',
+                                    type:'success',
+                                    duration:1000
+                                })
+                            }else{
+                                this.$message({
+                                    message:res.msg,
+                                    type:'error',
+                                    duration:1000
+                                })
+                            }
+                        })
                     }
                 } else {
                     console.log('error submit!!');
@@ -604,8 +669,28 @@ export default {
                         duration:1000
                     })
                 }else{
-                    alert('submit!');
-                    this.dialogBonusVisible = false;
+                    this.$post('performance/addPerformance',{
+                            earnSource:this.bonusForm.bonusRegion,                        
+                            money:this.achieveForm.achieveNumber,
+                            kind:2,
+                            operatorStatus:4
+                        }).then(res=>{
+                            console.log(res);
+                            if(res.code == 0 || res.code == 200){
+                                this.dialogBonusVisible= false;
+                                this.$message({
+                                    message:'扣除奖金成功',
+                                    type:'success',
+                                    duration:1000
+                                })
+                            }else{
+                                this.$message({
+                                    message:res.msg,
+                                    type:'error',
+                                    duration:1000
+                                })
+                            }
+                        })
                 }
             } else {
                 console.log('error submit!!');

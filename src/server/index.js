@@ -29,15 +29,15 @@ Axios.interceptors.request.use(
 Axios.interceptors.response.use(
 	response => {
 		//如果返回1  需要重新登录
-		// if(response.data.code == 1) {
-		// 	Message({
-		// 		message:'请重新登录',
-		// 		type: 'warning'
-		// 	});
-		// 	router.replace({
-        //       path: '/',
-        //     })
-		// }
+		if(response.data.code == 602) {
+			Message({
+				message:'请重新登录',
+				type: 'warning'
+			});
+			router.replace({
+              path: '/',
+            })
+		}
 		return response;
 	},
 	err => {
@@ -207,4 +207,29 @@ export default {
 			})
 		})
 	},
+	// 时间转换器
+	getTimes:(times)=>{
+        var d = new Date(times);
+        if(d.getMonth()+1<10){
+          if(d.getDate()<10){
+            return d.getFullYear()+"-"+"0"+(d.getMonth()+1)+"-"+"0"+d.getDate();
+          }else{
+            return d.getFullYear()+"-"+"0"+(d.getMonth()+1)+"-"+d.getDate();
+          }
+        }
+          if(d.getMonth()+1 == 10){
+            if(d.getDate()<10){
+              return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+"0"+d.getDate();
+            }else{
+              return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+            }
+          }
+          if(d.getMonth()+1 > 10){
+            if(d.getDate()<10){
+              return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+"0"+d.getDate();
+            }else{
+              return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+            }
+        }
+    },
 }
