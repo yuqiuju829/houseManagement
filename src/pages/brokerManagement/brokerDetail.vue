@@ -29,7 +29,7 @@
                         <p>推荐人：<span>{{referee?referee:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>性别：<span>{{sex?sex:'无'}}</span></p>
+                        <p>性别：<span>{{sex==1?'男':'女'}}</span></p>
                     </li>
                     <li>
                         <p>年龄：<span>{{age?age:'0'}} 岁</span></p>
@@ -41,16 +41,16 @@
                         <p>主业务区域：<span>{{area?area:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>经纪人总业绩：<span>{{totalAmount?totalAmount:'0'}} 元</span></p>
+                        <p>经纪人总业绩：<span>{{income.totalAmount? income.totalAmount:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>未结业绩：<span>{{unfinished?unfinished:'0'}} 元</span></p>
+                        <p>未结业绩：<span>{{income.unfinished?income.unfinished:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>共计奖金总额：<span>{{totalBonus?totalBonus:'0'}} 元</span></p>
+                        <p>共计奖金总额：<span>{{income.totalBonus?income.totalBonus:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>当前奖金余额：<span>{{currentBonus?currentBonus:'0'}} 元</span></p>
+                        <p>当前奖金余额：<span>{{income.currentBonus?income.currentBonus:'0'}} 元</span></p>
                     </li>
                 </ul>
             </div>
@@ -361,7 +361,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('achieveForm')" style="width:80%;margin-left:0" :data ='data'>确定</el-button>
+                    <el-button type="primary" @click="submitForm('achieveForm')" style="width:80%;margin-left:0">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -394,8 +394,8 @@
 export default {
     data(){
         return{
-            data:{
-                kind:''
+            form:{
+                
             },
             staff:'',//操作员工
             staffTel:'',//员工电话
@@ -406,10 +406,7 @@ export default {
             age:'',//年龄
             city:'',//主业务城市
             area:'',//主业务区域
-            totalAmount:'',//经纪人总业绩
-            unfinished:'',//未结业绩
-            totalBonus:'',//共计奖金总额
-            currentBonus:'',//当前奖金余额
+            income: {},  //业绩
             aNumber:'',//一级团队人数
             bNumber:'',//二级团队人数
             limitYear:'',//从业年限
@@ -418,7 +415,6 @@ export default {
             holder:'',//开户人
             bank:'',//开户银行
             cardNumber:'',//银行卡号
-
             disabled:false,//拉黑后不能再次拉黑
             dialogVisible:false,//拉黑弹框
             dialogAchieveVisible:false,//录入业绩弹框
@@ -481,15 +477,48 @@ export default {
     },
     methods:{
         getBrokerDetail(){
-            console.log(this.$route.query.id)
-            this.$get('user/getUserIntroduce',{id:this.$route.query.id}).then(res=>{
+            this.$get('user/getUserInfoByWeb',{id:this.$route.query.id}).then(res=>{
                 console.log(res);
                 if(res.code == 0 || res.data == 200){
-                    this.city = res.data.city;
-                    this.area = res.data.area;
                     this.name = res.data.nickname;
                     this.tel = res.data.phone;
+                    this.staff = res.data.operator;
+                    this.staffTel = res.data.operatorPhone;
+                    this.city = res.data.city;
+                    this.area = res.data.area;
                     this.sex = res.data.gender;
+                    this.aNumber = res.data.secondGroups;
+                    this.bNumber = res.data.thridGroups;
+                    this.slogan = res.data.slogan;
+                    if(res.data.accountBank){
+                        this.bank = res.data.accountBank;
+                    }
+                    if(res.data.accountNumber){
+                        this.cardNumber = res.data.accountNumber;
+                    }
+                    if(res.data.accountOwner){
+                        this.holder = res.data.accountOwner;
+                    }
+                    if(res.data.invitePhone){
+                        this.referee = res.data.invitePhone;
+                    }
+                    this.age = res.data.age;
+                    this.personalIntro = res.data.description;
+                    this.limitYear = res.data.workYears;
+                    this.receiptData = res.data.acceptCustomerList;
+                    this.rTotal = res.data.acceptCustomerList.length;
+                    this.bonusData = res.data.bounsList;
+                    this.bTotal = res.data.bounsList.length;
+                    this.achieveData = res.data.performanceList;
+                    this.aTotal = res.data.performanceList.length;
+                    this.customData = res.data.reportCustomerList;
+                    this.cTotal = res.data.reportCustomerList.length;
+                    this.houseData = res.data.houseSourceList;
+                    this.hTotal = res.data.houseSourceList.length;
+                    if(res.data.income){
+                        this.income = res.data.income;
+                    }
+                   
                 }else{
                     this.$message({
                         message:res.msg,

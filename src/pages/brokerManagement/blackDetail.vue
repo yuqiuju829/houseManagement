@@ -4,8 +4,8 @@
         <header>
             <el-button type="primary" plain @click="goBack">返回</el-button>
             <div class="personnel">
-                <p>操作员工：<span>{{staff?staff:'无'}}</span></p>
-                <p>电话：<span>{{staffTel?staffTel:'无'}}</span></p>
+                <p>操作员工：<span>{{form.operator?form.operator:'无'}}</span></p>
+                <p>电话：<span>{{form.operatorPhone?form.operatorPhone:'无'}}</span></p>
             </div>
         </header>
         <!-- 头部 -->
@@ -15,37 +15,37 @@
                 <h4>基本资料</h4>
                 <ul>
                     <li>
-                        <p>姓名：<span>{{name?name:'无'}}</span></p>
+                        <p>姓名：<span>{{form.nickname?form.nickname:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>电话：<span>{{tel?tel:'无'}}</span></p>
+                        <p>电话：<span>{{form.phone?form.phone:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>推荐人：<span>{{referee?referee:'无'}}</span></p>
+                        <p>推荐人：<span>{{form.invitePhone?form.invitePhone:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>性别：<span>{{sex?sex:'无'}}</span></p>
+                        <p>性别：<span>{{form.gender == 1?'男':'女'}}</span></p>
                     </li>
                     <li>
-                        <p>年龄：<span>{{age?age:'0'}} 岁</span></p>
+                        <p>年龄：<span>{{form.age?form.age:'0'}} 岁</span></p>
                     </li>
                     <li>
-                        <p>主业务城市：<span>{{city?city:'无'}}</span></p>
+                        <p>主业务城市：<span>{{form.city?form.city:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>主业务区域：<span>{{area?area:'无'}}</span></p>
+                        <p>主业务区域：<span>{{form.area?form.area:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>经纪人总业绩：<span>{{totalAmount?totalAmount:'0'}} 元</span></p>
+                        <p>经纪人总业绩：<span>{{income.performance?income.performance:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>未结业绩：<span>{{unfinished?unfinished:'0'}} 元</span></p>
+                        <p>未结业绩：<span>{{income.unclosePerformance?income.unclosePerformance:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>共计奖金总额：<span>{{totalBonus?totalBonus:'0'}} 元</span></p>
+                        <p>共计奖金总额：<span>{{income.bonus?income.bonus:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>当前奖金余额：<span>{{currentBonus?currentBonus:'0'}} 元</span></p>
+                        <p>当前奖金余额：<span>{{income.uncloseBonus?income.uncloseBonus:'0'}} 元</span></p>
                     </li>
                 </ul>
             </div>
@@ -53,13 +53,13 @@
                 <h4>附加资料</h4>
                 <ul>
                     <li>
-                        <p>从业年限：<span>{{limitYear?limitYear:'0'}} 年</span></p>
+                        <p>从业年限：<span>{{form.workYears?form.workYears:'0'}} 年</span></p>
                     </li>
                     <li>
-                        <p>个人简介：<span>{{personalIntro?personalIntro:'无'}}</span></p>
+                        <p>个人简介：<span>{{form.description?form.description:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>经纪人标语：<span>{{slogan?slogan:'无'}}</span></p>
+                        <p>经纪人标语：<span>{{form.slogan?form.slogan:'无'}}</span></p>
                     </li>
                 </ul>
             </div>
@@ -72,7 +72,7 @@
                         border
                         style="width: 99%;margin:auto">
                         <el-table-column
-                            prop="aim"
+                            prop="houseSourceNo"
                             label="房源编号">
                         </el-table-column>
                         <el-table-column
@@ -80,24 +80,28 @@
                             label="城市">
                         </el-table-column>
                         <el-table-column
-                            prop="houseName"
+                            prop="buildName"
                             label="楼盘名称">
                         </el-table-column>
                         <el-table-column
-                            prop="acreage"
+                            prop="square"
                             label="面积">
                         </el-table-column>
                         <el-table-column
-                            prop="price"
+                            prop="totalPrice"
                             label="价格">
                         </el-table-column>
                         <el-table-column
-                            prop="houseProperty"
+                            prop="houseSourceType"
                             label="房屋性质">
                         </el-table-column>
                         <el-table-column
                             prop="status"
                             label="状态">
+                            <template slot-scope="scope">
+                                <p v-if="scope.row.status == 1">上架中</p>
+                                <p v-if="scope.row.status == 0">下架中</p>
+                            </template>
                         </el-table-column>
                     </el-table>
                     <div class="block">
@@ -105,7 +109,7 @@
                         @current-change="handleHouseChange"
                         :current-page="hCurrentPage"
                         :page-size="hPageSize"
-                        layout="total, prev, pager, next, jumper"
+                        layout="total, prev, pager, next"
                         :total="hTotal">
                         </el-pagination>
                     </div>
@@ -120,31 +124,31 @@
                         border
                         style="width: 99%;margin:auto">
                         <el-table-column
-                            prop="time"
+                            prop="acceptDate	"
                             label="时间">
                         </el-table-column>
                         <el-table-column
-                            prop="name"
+                            prop="customer"
                             label="客户姓名">
                         </el-table-column>
                         <el-table-column
-                            prop="tel"
+                            prop="customerPhone"
                             label="客户电话">
                         </el-table-column>
                         <el-table-column
-                            prop="intentCity"
+                            prop="hopeCity"
                             label="意向城市">
                         </el-table-column>
                         <el-table-column
-                            prop="intentArea"
+                            prop="hopeArea"
                             label="意向区域">
                         </el-table-column>
                         <el-table-column
-                            prop="broker"
+                            prop="recorder"
                             label="合作经纪人">
                         </el-table-column>
                         <el-table-column
-                            prop="brokerTel"
+                            prop="recorderPhone"
                             label="经纪人电话">
                         </el-table-column>
                     </el-table>
@@ -153,7 +157,7 @@
                         @current-change="handleReplyChange"
                         :current-page="cCurrentPage"
                         :page-size="cPageSize"
-                        layout="total, prev, pager, next, jumper"
+                        layout="total, prev, pager, next"
                         :total="cTotal">
                         </el-pagination>
                     </div>
@@ -168,31 +172,31 @@
                         border
                         style="width: 99%;margin:auto">
                         <el-table-column
-                            prop="time"
+                            prop="acceptDate"
                             label="时间">
                         </el-table-column>
                         <el-table-column
-                            prop="name"
+                            prop="customer"
                             label="客户姓名">
                         </el-table-column>
                         <el-table-column
-                            prop="tel"
+                            prop="customerPhone"
                             label="客户电话">
                         </el-table-column>
                         <el-table-column
-                            prop="intentCity"
+                            prop="hopeCity"
                             label="意向城市">
                         </el-table-column>
                         <el-table-column
-                            prop="intentArea"
+                            prop="hopeArea"
                             label="意向区域">
                         </el-table-column>
                         <el-table-column
-                            prop="broker"
+                            prop="recorder"
                             label="合作经纪人">
                         </el-table-column>
                         <el-table-column
-                            prop="brokerTel"
+                            prop="recorderPhone"
                             label="经纪人电话">
                         </el-table-column>
                     </el-table>
@@ -201,7 +205,7 @@
                         @current-change="handleReceiptChange"
                         :current-page="rCurrentPage"
                         :page-size="rPageSize"
-                        layout="total, prev, pager, next, jumper"
+                        layout="total, prev, pager, next"
                         :total="rTotal">
                         </el-pagination>
                     </div>
@@ -209,11 +213,10 @@
             </div>
             <div class="basic">
                 <h4>拉黑原因</h4>
-                <p class="reason">{{reason?reason:'无'}}</p>
+                <p class="reason">{{form.blackreason?form.blackreason:'无'}}</p>
             </div>
             <div class="button">
-               <el-button type="warning" style="float:right;margin:20px 100px 0 0;" @click="toNormal" v-if="isRecover">恢复</el-button> 
-               <p class="had" v-if="isRecovered">已恢复</p>
+               <el-button type="warning" style="float:right;margin:20px 100px 0 0;" @click="toNormal" :disabled="disabled">恢复</el-button> 
             </div>
         </div>
         <!-- 内容 -->
@@ -224,25 +227,9 @@
 export default {
     data(){
         return{
-            isRecover:true,
-            isRecovered:false,
-            staff:'',//操作员工
-            staffTel:'',//员工电话
-            name:'',//姓名
-            tel:'',//电话
-            referee:'',//推荐人
-            sex:'',//性别
-            age:'',//年龄
-            city:'',//主业务城市
-            area:'',//主业务区域
-            totalAmount:'',//经纪人总业绩
-            unfinished:'',//未结业绩
-            totalBonus:'',//共计奖金总额
-            currentBonus:'',//当前奖金余额
-            limitYear:'',//从业年限
-            personalIntro:'',//个人简介
-            slogan:'',//经纪人标语
-            reason:'',//拉黑原因
+            form:{},
+            income:{},
+            disabled:false,
             houseData:[],//房源资料
             hCurrentPage:1,
             hPageSize:10,
@@ -262,23 +249,48 @@ export default {
     },
     methods:{
         getBlackDetail(){
-            console.log('获取黑名单详情')
+            this.$get('user/getUserInfoByWeb',{
+                id: this.$route.query.id
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    if(res.data.income){
+                        this.income = res.data.income;
+                    }
+                    this.form = res.data;
+                    this.houseData = res.data.houseSourceList;
+                    this.hTotal = res.data.houseSourceList.length;
+                    this.customData = res.data.reportCustomerList;
+                    this.cTotal = res.data.reportCustomerList.length;
+                    this.receiptData = res.data.acceptCustomerList;
+                    this.rTotal = res.data.acceptCustomerList.length;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         // 返回
         goBack(){
             this.$router.go(-1)
         },
         // 分页 房源
-        handleHouseChange(){
-
+        handleHouseChange(val){
+            this.hCurrentPage = val;
+            this.getBlackDetail(this.hCurrentPage)
         },
         // 分页 报单
-        handleReplyChange(){
-
+        handleReplyChange(val){
+            this.cCurrentPage = val;
+            this.getBlackDetail(this.cCurrentPage)
         },
         // 分页 接单
-        handleReceiptChange(){
-
+        handleReceiptChange(val){
+            this.rCurrentPage = val;
+            this.getBlackDetail(this.rCurrentPage)
         },
         // 恢复
         toNormal(){
@@ -291,8 +303,7 @@ export default {
                     type: 'success',
                     message: '恢复成功!'
                 });
-                this.isRecover = false;
-                this.isRecovered = true
+                this.disabled = true;
             }).catch(() => {
                 this.$message({
                     type: 'info',

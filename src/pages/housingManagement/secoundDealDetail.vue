@@ -3,7 +3,7 @@
         <!-- 头部 -->
         <header>
             <el-button type="primary" plain @click="goBack">返回</el-button>
-            <p>录入时间：<span>{{entryTime?entryTime:'无'}}</span></p>
+            <p>录入时间：<span>{{form.recordTime?form.recordTime:'无'}}</span></p>
         </header>
         <!-- 头部 -->
         <!-- 内容 -->
@@ -11,67 +11,67 @@
             <div class="basic" style="padding-top:20px">
                 <div class="house_basic">
                     <h4>房屋基本资料</h4>
-                    <p class="grounding" v-if="isGround">上架中</p>
-                    <p class="undercarriaging" v-if="isUnder">下架中</p>
+                    <p class="grounding" v-if="this.form.status == 1">上架中</p>
+                    <p class="undercarriaging" v-if="this.form.status == 0">下架中</p>
                 </div>
                 <ul>
                     <li>
-                        <p>城市：<span>{{city?city:'无'}}</span></p>
+                        <p>城市：<span>{{form.city?form.city:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>区域：<span>{{area?area:'无'}}</span></p>
+                        <p>区域：<span>{{form.area?form.area:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>标题：<span>{{title?title:'无'}}</span></p>
+                        <p>标题：<span>{{form.title?form.title:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>楼盘名称：<span>{{houseName?houseName:'无'}}</span></p>
+                        <p>楼盘名称：<span>{{form.buildName?form.buildName:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>面积：<span>{{acreage?acreage:'0'}} m<sup>2</sup></span></p>
+                        <p>面积：<span>{{form.square?form.square:'0'}} m<sup>2</sup></span></p>
                     </li>
                     <li>
-                        <p>总价：<span>{{total?total:'0'}} 万</span></p>
+                        <p>总价：<span>{{form.totalPrice?form.totalPrice:'0'}} 万</span></p>
                     </li>
                     <li>
-                        <p>单价：<span>{{univalent?univalent:'0'}} 元</span></p>
+                        <p>单价：<span>{{form.unitPrice?form.unitPrice:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>楼栋：<span>{{building?building:'0'}} 栋</span></p>
+                        <p>楼栋：<span>{{form.builds?form.builds:'0'}} 栋</span></p>
                     </li>
                     <li>
-                        <p>单元：<span>{{unit?unit:'0'}} 单元</span></p>
+                        <p>单元：<span>{{form.cell?form.cell:'0'}} 单元</span></p>
                     </li>
                     <li>
-                        <p>楼层：<span>{{floor?floor:'0'}} 层</span></p>
+                        <p>楼层：<span>{{form.floors?form.floors:'0'}} 层</span></p>
                     </li>
                     <li>
-                        <p>房号：<span>{{room?room:'0'}} 号</span></p>
+                        <p>房号：<span>{{form.roomNumber?form.roomNumber:'0'}} 号</span></p>
                     </li>
                     <li>
-                        <p>房型：<span>{{houseType?houseType:"无"}}</span></p>
+                        <p>房型：<span>{{form.roomType?form.roomType:"无"}}</span></p>
                     </li>
                     <li>
-                        <p>装修：<span>{{fitment?fitment:'无'}}</span></p>
+                        <p>装修：<span>{{form.decoration?form.decoration:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>朝向：<span>{{directe?directe:'无'}}</span></p>
+                        <p>朝向：<span>{{form.towards?form.towards:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>年代：<span>{{years?years:'0'}} 年</span></p>
+                        <p>年代：<span>{{form.years?form.years:'0'}} 年</span></p>
                     </li>
                     <li>
-                        <p>标签：<span>{{tag?tag:'无'}}</span></p>
+                        <p>标签：<span>{{form.label?form.label:'无'}}</span></p>
                     </li>
                 </ul>
             </div>
             <div class="basic attach">
                 <h4>房屋介绍</h4>
-                <p class="intro">{{houseIntro?houseIntro:'无'}}</p>
+                <p class="intro">{{form.introduction?form.introduction:'无'}}</p>
             </div>
             <div class="basic attach">
                 <h4>经纪人标语</h4>
-                <p class="intro">{{slogan?slogan:'无'}}</p>
+                <p class="intro">{{form.slogan?form.slogan:'无'}}</p>
             </div>
             <div class="real">
                 <h4>实勘</h4>
@@ -87,10 +87,10 @@
                 <h4>房东信息</h4>
                 <ul>
                     <li>
-                        <p>房东姓名：<span>{{landlord?landlord:'无'}}</span></p>
+                        <p>房东姓名：<span>{{form.landlord?form.landlord:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>房东电话：<span>{{landlordTel?landlordTel:'无'}}</span></p>
+                        <p>房东电话：<span>{{form.landlordPhone?form.landlordPhone:'无'}}</span></p>
                     </li>
                 </ul>
             </div>
@@ -98,10 +98,10 @@
                 <h4>责任经纪人</h4>
                 <ul>
                     <li>
-                        <p>经纪人姓名：<span>{{broker?broker:'无'}}</span></p>
+                        <p>经纪人姓名：<span>{{form.owner?form.owner:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>经纪人电话：<span>{{brokerTel?brokerTel:'无'}}</span></p>
+                        <p>经纪人电话：<span>{{form.ownerPhone?form.ownerPhone:'无'}}</span></p>
                     </li>
                 </ul>
             </div>
@@ -138,7 +138,7 @@
                         @current-change="handleCurrentChange"
                         :current-page="currentPage"
                         :page-size="pageSize"
-                        layout="total, prev, pager, next, jumper"
+                        layout="total, prev, pager, next"
                         :total="total">
                         </el-pagination>
                     </div>
@@ -153,29 +153,8 @@
 export default {
     data(){
         return{
-            entryTime:'',//录入时间
-            city:'',//城市
-            area:'',//区域
-            title:'',//标题
-            houseName:'',//楼盘名称
-            acreage:'',//面积
-            total:'',//总价
-            univalent:'',//单价
-            building:'',//楼栋
-            unit:"",//单元
-            floor:'',//楼层
-            room:'',//房号
-            houseType:'',//房型
-            fitment:'',//装修
-            directe:'',//朝向
-            years:'',//年代
-            tag:'',//标签
-            houseIntro:'',//房屋介绍
-            slogan:'',//经纪人标语
-            landlord:'',//房东
-            landlordTel:'',//房东电话
-            broker:'',//经纪人姓名
-            brokerTel:'',//经纪人电话
+            form:{},
+            
             pics:[
                 {
                     title:'恒大',
@@ -203,7 +182,24 @@ export default {
     },
     methods:{
         getSecoundDetail(){
-            console.log('获取二手房买卖、租赁详情')
+            this.$get('/houseSource/getHouseDetailsByType',{
+                id:this.$route.query.id,
+                houseSourceType: this.$route.query.type
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.form = res.data;
+                    this.pics = res.data.showImgs;
+                    this.recordData = res.data.operationLogs;
+                    this.total = res.data.operationLogs.length;
+                }else{
+                    this.$messge({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         // 返回
         goBack(){

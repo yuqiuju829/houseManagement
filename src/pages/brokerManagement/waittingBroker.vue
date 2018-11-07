@@ -12,12 +12,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%" @change="citySearch">
+                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%">
                         <el-option
                         v-for="item in cityLists"
                         :key="item.value"
@@ -27,7 +27,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%" @change="areaSearch">
+                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%">
                         <el-option
                         v-for="item in areaLists"
                         :key="item.value"
@@ -37,14 +37,17 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="statu" clearable placeholder="请选择处理状态" style="width:80%" @change="statuSearch">
-                        <el-option label="已处理" value="1"></el-option>
-                        <el-option label="未处理" value="2"></el-option>
+                    <el-select v-model="statu" clearable placeholder="请选择处理状态" style="width:80%">
+                        <el-option label="待审核" value="0"></el-option>
+                        <el-option label="已审核" value="1"></el-option>
                     </el-select>
                 </el-col>
                 <el-col :span="7">
+                        <el-input clearable placeholder="请输入账号" style="width:80%;margin-right:30px" v-model="phone"></el-input>
+                </el-col>
+                <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
@@ -65,15 +68,15 @@
                 style="width: 95%;margin:auto"
                 :default-sort = "{prop: 'date', order: 'descending'}">
                 <el-table-column
-                prop="time"
+                prop="applyTime"
                 label="申请时间">
                 </el-table-column>
                 <el-table-column
-                prop="name"
+                prop="nickname"
                 label="姓名">
                 </el-table-column>
                 <el-table-column
-                prop="account"
+                prop="phone"
                 label="账号">
                 </el-table-column>
                 <el-table-column
@@ -85,12 +88,16 @@
                 label="区域">
                 </el-table-column>
                 <el-table-column
-                prop="groom"
+                prop="invitePhone"
                 label="推荐人账号">
                 </el-table-column>
                <el-table-column
-                prop="handleStatus"
+                prop="status"
                 label="处理状态">
+                <template slot-scope="scope">
+                    <p v-if="scope.row.status == 0">待审核</p>
+                    <p v-if="scope.row.status == 1">已审核</p>
+                </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
@@ -125,35 +132,48 @@ export default {
             city:'',//城市查询
             area:'',//区域查询
             statu:'',//状态查询
-            text:'',//条件查询
+            phone:'',//条件查询
+            name:'',
             cityLists:[],
             areaLists:[],
-            tableData: [
-                {
-                    time:'2018-10-16',
-                    name: '黄大喵',
-                    account: '123456',
-                    city: '成都',
-                    area:'高新',
-                    groom:'456789',
-                    handleStatus:'未处理'
-                }
-            ],
+            tableData: [],
             brokerNum:'3000',
             currentNum:'200',
             currentPage:1,
             pageSize:10,
-            total:100
+            total:null
         }
     },
     mounted(){
-        this.getWaitters();
+        this.getWaitters(this.currentPage);
         this.getCities();
         this.getAreas();
     },
     methods:{
         getWaitters(){
-            console.log('获取待审核经纪人')
+            this.$post('user/getAgentUserList',{
+                beginDate: this.$getTimes(this.date[0]) ? this.$getTimes(this.date[0]) : null,
+                endDate: this.$getTimes(this.date[1]) ? this.$getTimes(this.date[1]) : null,
+                city: this.city ? this.city : null,
+                area: this.area ? this.area : null,
+                status: this.statu ? this.statu : null,
+                phone: this.phone ? this.phone : null,
+                nickname: this.name ? this.name : null,
+                pageNum: this.currentPage ? this.currentPage : 1,
+                pageSize: this.pageSize ? this.pageSize : 20
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.tableData = res.data.list;
+                    this.total = res.data.list.length;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         getCities(){
             console.log('获取城市')
@@ -161,35 +181,24 @@ export default {
         getAreas(){
             console.log('获取区域')
         },
-        // 日期查询
-        dateSearch(){
-            console.log('日期搜索')
-        },
-        // 城市查询
-        citySearch(){
-            console.log('城市搜索')
-        },
-        // 区域查询
-        areaSearch(){
-            console.log('区域搜索')
-        },
-        // 状态查询
-        statuSearch(){
-            console.log('按处理状态搜索')
-        },
         // 条件查询
         search(){
-            console.log('按条件搜索')
+            this.currentPage = 1;
+            this.getWaitters(this.currentPage);
         },
         // 查看详情
-        handleClick(){
+        handleClick(val){
             this.$router.push({
-                path:'/waittingDetail'
+                path:'/waittingDetail',
+                query:{
+                    id:val.cId
+                }
             })
         },
         // 分页
-        handleCurrentChange(){
-            console.log('分页')
+        handleCurrentChange(val){
+            this.currentPage = val;
+            this.getWaitters(this.currentPage)
         },
     }
 }

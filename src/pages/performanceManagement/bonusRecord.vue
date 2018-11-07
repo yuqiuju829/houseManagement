@@ -11,12 +11,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%" @change="citySearch">
+                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%">
                         <el-option
                         v-for="item in cityLists"
                         :key="item.value"
@@ -26,7 +26,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%" @change="areaSearch">
+                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%">
                         <el-option
                         v-for="item in areaLists"
                         :key="item.value"
@@ -35,10 +35,15 @@
                         </el-option>
                     </el-select>
                 </el-col>
-
                 <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入电话" style="width:80%;margin-right:30px" v-model="phone"></el-input>
+                        <el-button type="primary" @click="search">搜索</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="7">
+                    <div class="search">
+                        <el-input clearable placeholder="请输入姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
@@ -98,47 +103,11 @@ export default {
             date:'',
             city:'',
             area:'',
-            text:'',
+            phone:'',
+            name:'',
             cityLists:[],
             areaLists:[],
-            tableData: [
-                {
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    status:'454545'
-                },
-                {
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    status:'454545'
-                },
-                {
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    status:'454545'
-                },
-                {
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    status:'454545'
-                }
-            ],
+            tableData: [],
             currentPage:1,
             pageSize:10,
             total:100,
@@ -153,20 +122,20 @@ export default {
     },
     methods:{
         getRecord(){
-            this.$post('performance/queryByRecord',{
+            // this.$post('performance/queryByRecord',{
 
-            }).then(res=>{
-                console.log(res);
-                if(res.code == 0 || res.code == 200){
+            // }).then(res=>{
+            //     console.log(res);
+            //     if(res.code == 0 || res.code == 200){
 
-                }else{
-                    this.$message({
-                        message:res.msg,
-                        type:'error',
-                        duration:1000
-                    })
-                }
-            })
+            //     }else{
+            //         this.$message({
+            //             message:res.msg,
+            //             type:'error',
+            //             duration:1000
+            //         })
+            //     }
+            // })
             console.log('获取奖金记录')
         },
         getCities(){

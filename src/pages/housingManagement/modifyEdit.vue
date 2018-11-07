@@ -2,8 +2,8 @@
     <div>
         <header>
             <el-button type="primary" plain @click="goBack">返回</el-button>
-            <p>报盘经纪人：<span>黄大喵</span></p>
-            <p>经纪人电话：<span>15983735209</span></p>
+            <p>报盘经纪人：<span>{{ruleForm.agent?ruleForm.agent:'无'}}</span></p>
+            <p>经纪人电话：<span>{{ruleForm.agentPhone?ruleForm.agentPhone:'无'}}</span></p>
             <p>录入时间：<span>2018-10-18</span></p>
         </header>
         <div class="content">
@@ -12,13 +12,13 @@
                 <el-row>
                     <el-col :span="7">
                         <el-form-item label="新盘名称：" prop="name">
-                            <el-input v-model="ruleForm.name" clearable></el-input>
+                            <el-input v-model="ruleForm.buildName" clearable></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="最新开盘时间：" prop="time">
                             <el-date-picker
-                                v-model="ruleForm.time"
+                                v-model="ruleForm.latestActivityTime"
                                 type="date"
                                 placeholder="选择日期"
                                 style="width:100%" clearable>
@@ -27,7 +27,7 @@
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="开发商：" prop="developers">
-                            <el-input v-model="ruleForm.developers" clearable></el-input>
+                            <el-input v-model="ruleForm.developer" clearable></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
@@ -48,7 +48,7 @@
                     <el-col :span="7">
                         <el-form-item label="交房时间：" prop="roomTime">
                             <el-date-picker
-                                v-model="ruleForm.roomTime"
+                                v-model="ruleForm.handRoomTime"
                                 type="date"
                                 placeholder="选择日期"
                                 style="width:100%" clearable>
@@ -57,67 +57,59 @@
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="梯户比：" prop="Ladder">
-                            <el-input v-model="ruleForm.Ladder" clearable></el-input>
+                            <el-input v-model="ruleForm.elevatorRoomRate" clearable></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="层高标准：" prop="layer">
-                            <el-input v-model="ruleForm.layer" clearable>
+                            <el-input v-model="ruleForm.cell" clearable>
                                 <template slot="append">m</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
+                    
+                    
                     <el-col :span="7">
                         <el-form-item label="负责人：" prop="leader">
-                            <el-input v-model="ruleForm.leader" clearable></el-input>
+                            <el-input v-model="ruleForm.owner" clearable></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="负责人电话：" prop="leaderTel">
-                            <el-input v-model="ruleForm.leaderTel" clearable oninput="if(value.length > 11)value = value.slice(0, 11)"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="7">
-                        <el-form-item label="报盘经纪人：" prop="broker">
-                            <el-input v-model="ruleForm.broker" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="7">
-                        <el-form-item label="经纪人电话：" prop="tel">
-                            <el-input v-model="ruleForm.tel" clearable oninput="if(value.length > 11)value = value.slice(0, 11)"></el-input>
+                            <el-input v-model="ruleForm.ownerPhone" clearable maxlength="11"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="佣金提成：" prop="extract">
-                            <el-input v-model="ruleForm.extract" clearable>
+                            <el-input v-model="ruleForm.commission" clearable>
                                 <template slot="append">元</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="楼盘均价：" prop="average">
-                            <el-input v-model="ruleForm.average" clearable>
+                            <el-input v-model="ruleForm.unitPrice" clearable>
                                 <template slot="append">元</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="产权年限：" prop="ageLimit">
-                            <el-input v-model="ruleForm.ageLimit" clearable>
+                            <el-input v-model="ruleForm.propertyYears" clearable>
                                 <template slot="append">年</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="户型面积：" prop="unitArea">
-                            <el-input v-model="ruleForm.unitArea" clearable>
+                            <el-input v-model="ruleForm.apartmentArea" clearable>
                                 <template slot="append">m<sup>2</sup></template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="占地面积：" prop="areaCovere">
-                            <el-input v-model="ruleForm.areaCovere" clearable>
+                            <el-input v-model="ruleForm.coverArea" clearable>
                                 <template slot="append">m<sup>2</sup></template>
                             </el-input>
                         </el-form-item>
@@ -131,72 +123,55 @@
                     </el-col>
                     <el-col :span="7">
                          <el-form-item label="容积率：" prop="volumetric">
-                            <el-input v-model="ruleForm.volumetric" clearable>
+                            <el-input v-model="ruleForm.far" clearable>
                                 <template slot="append">%</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="绿化率：" prop="greenRate">
-                            <el-input v-model="ruleForm.greenRate" clearable>
+                            <el-input v-model="ruleForm.green" clearable>
                                 <template slot="append">%</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="停车位：" prop="parkingSpace">
-                            <el-input v-model="ruleForm.parkingSpace" clearable>
+                            <el-input v-model="ruleForm.parks" clearable>
                                 <template slot="append">个</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="总栋数：" prop="totalNumber">
-                            <el-input v-model="ruleForm.totalNumber" clearable>
+                            <el-input v-model="ruleForm.builds" clearable>
                                 <template slot="append">栋</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="总户数：" prop="roomNumber">
-                            <el-input v-model="ruleForm.roomNumber" clearable>
+                            <el-input v-model="ruleForm.households" clearable>
                                 <template slot="append">户</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
                         <el-form-item label="总楼层：" prop="totalFloor">
-                            <el-input v-model="ruleForm.totalFloor" clearable>
+                            <el-input v-model="ruleForm.floors" clearable>
                                 <template slot="append">层</template>
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="20">
-                        <el-form-item label="装修标准：" prop="radio" >
-                            <el-radio-group v-model="ruleForm.radio" style="display:flex;justify-content:space-around">
-                                <el-radio-button :label="0">毛坯</el-radio-button>
-                                <el-radio-button :label="1">简单装修</el-radio-button>
-                                <el-radio-button :label="2">中等装修</el-radio-button>
-                                <el-radio-button :label="3">精装修</el-radio-button>
-                                <el-radio-button :label="4">豪华装修</el-radio-button>
-                            </el-radio-group>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="20">
-                        <el-form-item label="楼盘类型：" prop="checkboxGroup2" >
-                            <el-checkbox-group v-model="checkboxGroup2" style="display:flex;justify-content:space-around">
-                                <el-checkbox-button v-for="type in types" :label="type" :key="type">{{type}}</el-checkbox-button>
-                            </el-checkbox-group>
-                        </el-form-item>
-                    </el-col>
+                    
                     <el-col :span="23">
                         <el-form-item label="周边配套：" prop="match">
-                            <el-input type="textarea" v-model="ruleForm.match" ></el-input>
+                            <el-input type="textarea" v-model="ruleForm.surroundings" ></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="23">
                         <el-form-item label="项目简介：" prop="projectIntro">
-                            <el-input type="textarea" v-model="ruleForm.projectIntro"></el-input>
+                            <el-input type="textarea" v-model="ruleForm.introduction"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
@@ -219,6 +194,24 @@
                                 @blur="handleInputConfirm">
                             </el-input>
                             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 新建</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item label="装修标准：" prop="radio" >
+                            <el-radio-group v-model="ruleForm.decoration" style="display:flex;justify-content:space-around">
+                                <el-radio-button label="毛坯">毛坯</el-radio-button>
+                                <el-radio-button label="简单装修">简单装修</el-radio-button>
+                                <el-radio-button label="中等装修">中等装修</el-radio-button>
+                                <el-radio-button label="精装">精装修</el-radio-button>
+                                <el-radio-button label="豪华装修">豪华装修</el-radio-button>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item label="楼盘类型：" prop="checkboxGroup2" >
+                            <el-checkbox-group v-model="checkboxGroup2" style="display:flex;justify-content:space-around">
+                                <el-checkbox-button v-for="type in types" :label="type" :key="type">{{type}}</el-checkbox-button>
+                            </el-checkbox-group>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
@@ -304,6 +297,8 @@ export default {
                 area:'',//区域
                 unitArea:'',//户型面积
                 layer:'',//层高标准
+            // checkboxGroup2:[],
+
                 // checkboxGroup2:['住宅'],//装修标准
                 average:'',//楼盘均价
                 radio:'',//楼盘类型
@@ -462,8 +457,26 @@ export default {
         }
     },
     mounted(){
+        this.getEditInfo()
     },
     methods:{
+        getEditInfo(){
+            this.$get('houseSource/queryById',{
+                houseSourcesId: this.$route.query.id
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.ruleForm = res.data;
+                    this.dynamicTags = res.data.label;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
+        },
         // 返回
         goBack(){
             this.$router.go(-1)

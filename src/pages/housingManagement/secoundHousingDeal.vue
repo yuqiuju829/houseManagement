@@ -12,12 +12,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%" @change="citySearch">
+                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%">
                         <el-option
                         v-for="item in cityLists"
                         :key="item.value"
@@ -27,7 +27,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%" @change="areaSearch">
+                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%">
                         <el-option
                         v-for="item in areaLists"
                         :key="item.value"
@@ -37,8 +37,14 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
+                        <el-input clearable placeholder="请输入电话" style="width:80%;margin-right:30px" v-model="phone"></el-input>
+                </el-col>
+                <el-col :span="7">
+                        <el-input clearable placeholder="请输入房源编号" style="width:80%;margin-right:30px" v-model="aim"></el-input>
+                </el-col>
+                <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入经纪人姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
@@ -58,7 +64,7 @@
                 border
                 style="width: 95%;margin:auto">
                 <el-table-column
-                prop="aim"
+                prop="houseSourceNo"
                 label="房源编号">
                 </el-table-column>
                 <el-table-column
@@ -70,36 +76,44 @@
                 label="区域">
                 </el-table-column>
                 <el-table-column
-                prop="house"
+                prop="buildName"
                 label="楼盘">
                 </el-table-column>
                 <el-table-column
-                prop="unit"
+                prop="builds"
                 label="楼栋单元">
                 </el-table-column>
                 <el-table-column
-                prop="room"
+                prop="roomNumber"
                 label="房号">
                 </el-table-column>
                 <el-table-column
-                prop="acreage"
+                prop="square"
                 label="面积(m²)">
                 </el-table-column>
                 <el-table-column
-                prop="price"
+                prop="totalPrice"
                 label="价格(元)">
                 </el-table-column>
                 <el-table-column
-                prop="broker"
+                prop="recorder"
                 label="经纪人">
                 </el-table-column>
                  <el-table-column
-                prop="brokerTel"
+                prop="recorderPhone"
                 label="电话">
                 </el-table-column>
                 <el-table-column
-                prop="houseStatus"
+                prop="recordTime"
+                label="买卖时间">
+                </el-table-column>
+                <el-table-column
+                prop="status"
                 label="上架状态">
+                <template slot-scope="scope">
+                    <p v-if="scope.row.status == 1">上架中</p>
+                    <p v-if="scope.row.status == 0">下架中</p>
+                </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
@@ -133,24 +147,12 @@ export default {
             date:'',//日期查询
             city:'',//城市查询
             area:'',//区域查询
-            text:'',//条件查询
+            phone:'',//条件查询
+            name:'',
+            aim:'',
             cityLists:[],
             areaLists:[],
-            tableData: [
-                {
-                    aim:'12315465465',
-                    city:'成都',
-                    area: '高新',
-                    house: '成都',
-                    unit:'高新',
-                    room:'2000-3000',
-                    acreage:'卖',
-                    broker:'黄大米',
-                    brokerTel:'15983735209',
-                    price:"黄小米",
-                    houseStatus:'上架中'
-                }
-            ],
+            tableData: [],
             brokerNum:'3000',
             currentNum:'200',
             currentPage:1,
@@ -165,7 +167,30 @@ export default {
     },
     methods:{
         getDeals(){
-            console.log('获取二手房买卖')
+            this.$post('houseSource/getHouseSourcesListByWeb',{
+                houseSourceType: 1,
+                beginDate: this.$getTimes(this.date[0]) ? this.$getTimes(this.date[0]) : null,
+                endDate: this.$getTimes(this.date[1]) ? this.$getTimes(this.date[1]) : null,
+                city: this.city ? this.city : null,
+                area: this.area ? this.area : null,
+                phone: this.phone ? this.phone : null,
+                houseSourceNo: this.aim ? this.aim : null,
+                name: this.name ? this.name : null,
+                pageNum: this.currentPage ? this.currentPage : 1,
+                pageSize:this.pageSize ? this.pageSize : 20
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.tableData = res.data.list;
+                    this.total = res.data.list.length;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         getCities(){
             console.log('获取城市')
@@ -173,26 +198,19 @@ export default {
         getAreas(){
             console.log('获取区域')
         },
-        // 日期查询
-        dateSearch(){
-            console.log('日期搜索')
-        },
-        // 城市查询
-        citySearch(){
-            console.log('城市搜索')
-        },
-        // 区域查询
-        areaSearch(){
-            console.log('区域搜索')
-        },
         // 条件查询
         search(){
-            console.log('按条件搜索')
+            this.currentPage = 1
+            this.getDeals(this.currentPage)
         },
         // 查看详情
-        handleClick(){
+        handleClick(val){
             this.$router.push({
-                path:'/secoundDealDetail'
+                path:'/secoundDealDetail',
+                query:{
+                    id:val.cId,
+                    type: 1
+                }
             })
         },
         // 分页

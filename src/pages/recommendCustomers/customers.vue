@@ -11,12 +11,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="Declarate" clearable placeholder="请选择报单状态" @change="declarateSearch" style="width:80%">
+                    <el-select v-model="Declarate" clearable placeholder="请选择报单状态" style="width:80%">
                         <el-option
                         v-for="item in declarateLists"
                         :key="item.value"
@@ -26,7 +26,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="audit" clearable placeholder="请选择审阅状态" @change="auditSearch" style="width:80%">
+                    <el-select v-model="audit" clearable placeholder="请选择审阅状态" style="width:80%">
                         <el-option
                         v-for="item in auditLists"
                         :key="item.value"
@@ -36,8 +36,11 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
+                        <el-input clearable placeholder="请输入电话" style="width:80%;margin-right:30px" v-model="phone"></el-input>
+                </el-col>
+                <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
@@ -109,51 +112,11 @@ export default {
             date:'',
             Declarate:'',
             audit:'',
-            text:'',
+            phone:'',
+            name:'',
             declarateLists:[],
             auditLists:[],
-            tableData: [
-                {
-                    name:'黄大米',
-                    tel:'12315465465',
-                    intentArea:'成都',
-                    broker: '高新',
-                    brokerTel: '成都',
-                    city:'高新',
-                    declaratStatu:'2000-3000',
-                    auditStatu:'卖',
-                },
-                {
-                    name:'黄大米',
-                    tel:'12315465465',
-                    intentArea:'成都',
-                    broker: '高新',
-                    brokerTel: '成都',
-                    city:'高新',
-                    declaratStatu:'2000-3000',
-                    auditStatu:'卖',
-                },
-                {
-                    name:'黄大米',
-                    tel:'12315465465',
-                    intentArea:'成都',
-                    broker: '高新',
-                    brokerTel: '成都',
-                    city:'高新',
-                    declaratStatu:'2000-3000',
-                    auditStatu:'卖',
-                },
-                {
-                    name:'黄大米',
-                    tel:'12315465465',
-                    intentArea:'成都',
-                    broker: '高新',
-                    brokerTel: '成都',
-                    city:'高新',
-                    declaratStatu:'2000-3000',
-                    auditStatu:'卖',
-                }
-            ],
+            tableData: [],
             brokerNum:'3000',
             currentNum:'200',
             currentPage:1,
@@ -166,30 +129,20 @@ export default {
     },
     methods:{
         getCustoms(){
-            this.$post('customerDrive/queryByRecord',{
+            // this.$post('customerDrive/queryByRecord',{
 
-            }).then(res=>{
-                console.log(res);
-                if(res.code == 0 || res.code == 200){
+            // }).then(res=>{
+            //     console.log(res);
+            //     if(res.code == 0 || res.code == 200){
 
-                }else{
-                    this.$message({
-                        message:res.msg,
-                        type:'error',
-                        duration:1000
-                    })
-                }
-            })
-            console.log('获取客户')
-        },
-        dateSearch(){
-            console.log("日期搜索")
-        },
-        declarateSearch(){
-            console.log("按报单状态搜索")
-        },
-        auditSearch(){
-            console.log("按审核状态搜索")
+            //     }else{
+            //         this.$message({
+            //             message:res.msg,
+            //             type:'error',
+            //             duration:1000
+            //         })
+            //     }
+            // })
         },
         search(){
             console.log("按条件搜索")

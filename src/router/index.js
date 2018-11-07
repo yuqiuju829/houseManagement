@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import store from '../store/store'
 Vue.use(Router)
 
 export default new Router({
@@ -10,7 +10,6 @@ export default new Router({
 			name: 'login',
 			component: resolve => require(['@/pages/login'], resolve)
     },
-    
     {
       path: '/home',
       name: 'home',
@@ -264,7 +263,19 @@ export default new Router({
           },
           component: resolve => require(['@/pages/newPerson'], resolve)//新建人员
         },
+        
       ]
+    },
+    {
+      path: '*',
+      name: 'notFound',
+      component: resolve => require(['@/pages/notFound'], resolve)//新建人员
     },
   ]
 })
+
+
+
+if (sessionStorage.getItem('token')) {
+  store.commit('setToken', sessionStorage.getItem('token'))
+}

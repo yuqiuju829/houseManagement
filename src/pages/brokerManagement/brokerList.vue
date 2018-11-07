@@ -9,8 +9,7 @@
                         v-for="item in cityLists"
                         :key="item.value"
                         :label="item.label"
-                        :value="item.value"
-                        @change="citySearch">
+                        :value="item.value">
                         </el-option>
                     </el-select>
                 </el-col>
@@ -20,21 +19,19 @@
                         v-for="item in areaLists"
                         :key="item.value"
                         :label="item.label"
-                        :value="item.value"
-                        @change="areaSearch">
+                        :value="item.value">
                         </el-option>
                     </el-select>
                 </el-col>
                 <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入账号" style="width:80%;margin-right:30px" v-model="phone" @keyup.enter.native="getBrokerList(phone)" @blur="telSearch()"></el-input>
+                        <el-input clearable placeholder="请输入账号" style="width:80%;margin-right:30px" v-model="phone" @keyup.enter.native="getBrokerList(phone)"></el-input>
                     </div>
                 </el-col>
                 <el-col :span="7">
                     <div class="search">
                         <el-input clearable placeholder="请输入姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
-                        <el-button type="primary" @click="search">搜索</el-button>
-                        
+                        <el-button type="primary" @click="search" >搜索</el-button>
                     </div>
                 </el-col>
             </el-row>
@@ -123,11 +120,7 @@
 </template>
 
 <script>
-import mainHeader from '../../components/mainHeader'
 export default {
-    components:{
-        mainHeader
-    },
     data(){
         return{
             city:'',//城市查询
@@ -150,14 +143,13 @@ export default {
         this.getAreas();
     },
     methods:{
-        getBrokerList(name=null, city=null,phone= null,area= null){
-            console.log(phone,city,name,area)
+        getBrokerList(){
             this.$post('user/getAgentUserList',{
-                phone: phone,
-                city:city,
-                nickname:name,
-                area:area,
-                pageNum:this.currentPage?this.currentPage:'',
+                phone: this.phone?this.phone:null,
+                city:this.city?this.city:null,
+                nickname:this.name?this.name:null,
+                area:this.area?this.area:null,
+                pageNum:this.currentPage?this.currentPage:null,
                 pageSize:this.pageSize?this.pageSize:1
             }).then(res=>{
                 console.log(res);
@@ -184,24 +176,13 @@ export default {
         formatter(row, column) {
             return row.address;
         },
-        // 城市查询
-        citySearch(val){
-            this.getBrokerList(this.city)
-        },
-        // 区域查询
-        areaSearch(){
-            this.getBrokerList(this.area)
-        },
-        telSearch(){
-            this.getBrokerList(this.phone)
-        },
         // 条件查询
         search(){
-            this.getBrokerList(this.name)
+            this.currentPage = 1
+            this.getBrokerList(this.currentPage)
         },
         // 查看详情
         handleClick(val){
-            console.log(val.cId)
             this.$router.push({
                 path:'/brokerDetail',
                 query:{
@@ -222,6 +203,7 @@ export default {
 <style>
 .el-row{
     width:100%;
+    margin-bottom: 30px;
 }
 .el-col-7{
     width:30%;

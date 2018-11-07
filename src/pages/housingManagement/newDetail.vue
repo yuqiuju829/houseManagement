@@ -3,91 +3,91 @@
         <!-- 头部 -->
         <header>
             <el-button type="primary" plain @click="goBack">返回</el-button>
-            <p>报盘经纪人：<span>{{broker?broker:'无'}}</span></p>
-            <p>经纪人电话：<span>{{brokerTel?brokerTel:'无'}}</span></p>
-            <p>录入时间：<span>{{entryTime?entryTime:'无'}}</span></p>
-            <p class="grounding" v-if="isGround">上架中</p>
-            <p class="undercarriaging" v-if="isUnder">下架中</p>
+            <p>报盘经纪人：<span>{{form.agent?form.agent:'无'}}</span></p>
+            <p>经纪人电话：<span>{{form.agentPhone?form.agentPhone:'无'}}</span></p>
+            <p>录入时间：<span>{{form.operatorTime?form.operatorTime:'无'}}</span></p>
+            <p class="grounding" v-if="this.form.status == 1">上架中</p>
+            <p class="undercarriaging" v-if="this.form.status == 0">下架中</p>
         </header>
         <!-- 头部 -->
         <!-- 内容 -->
         <div class="content">
             <div class="buttons">
-                <el-button type="success" @click="top">置顶</el-button>
+                <el-button type="success" @click="top" :disabled="disabled">置顶</el-button>
                 <el-button type="warning" @click="edit">编辑</el-button>
             </div>
             <div class="basic" style="padding-top:20px">
                 <h4>房屋基本资料</h4>
                 <ul>
                     <li>
-                        <p>城市：<span>{{city?city:'无'}}</span></p>
+                        <p>城市：<span>{{form.city?form.city:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>区域：<span>{{area?area:'无'}}</span></p>
+                        <p>区域：<span>{{form.area?form.area:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>楼盘名称：<span>{{houseName?houseName:'无'}}</span></p>
+                        <p>楼盘名称：<span>{{form.buildName?form.buildName:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>当前状态：<span>{{currentStatu?currentStatu:'无'}}</span></p>
+                        <p>当前状态：<span>{{form.sellStatus?(form.sellStatus == 1?'已售':'待售'):'无'}}</span></p>
                     </li>
                      <li>
-                        <p>开发商：<span>{{developer?developer:"无"}}</span></p>
+                        <p>开发商：<span>{{form.developer?form.developer:"无"}}</span></p>
                     </li>
                     <li>
-                        <p>环线位置：<span>{{address?address:'无'}}</span></p>
+                        <p>环线位置：<span>{{form.address?form.address:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>占地面积：<span>{{cover?cover:'0'}} m<sup>2</sup></span></p>
+                        <p>占地面积：<span>{{form.coverArea?form.coverArea:'0'}} m<sup>2</sup></span></p>
                     </li>
                     <li>
-                        <p>建筑面积：<span>{{buildUp?buildUp:'0'}} m<sup>2</sup></span></p>
+                        <p>建筑面积：<span>{{form.buildArea?form.buildArea:'0'}} m<sup>2</sup></span></p>
                     </li>
                     <li>
                         <p>楼盘性质：<span>{{property?property:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>产权年限：<span>{{limit?limit:'0'}} 年</span></p>
+                        <p>产权年限：<span>{{form.propertyYears?form.propertyYears:'0'}} 年</span></p>
                     </li>
                     <li>
-                        <p>容积率：<span>{{plot?plot:'0'}} %</span></p>
+                        <p>容积率：<span>{{form.far?form.far:'0'}} %</span></p>
                     </li>
                     <li>
-                        <p>绿化率：<span>{{green?green:'0'}} %</span></p>
+                        <p>绿化率：<span>{{form.green?form.green:'0'}} %</span></p>
                     </li>
                     <li>
-                        <p>楼栋总数：<span>{{building?building:'0'}} 栋</span></p>
+                        <p>楼栋总数：<span>{{form.builds?form.builds:'0'}} 栋</span></p>
                     </li>
                     <li>
-                        <p>总户数：<span>{{totalHolds?totalHolds:'0'}} 户</span></p>
+                        <p>总户数：<span>{{form.households?form.households:'0'}} 户</span></p>
                     </li>
                     <li>
-                        <p>楼层状况：<span>{{floorStatu?floorStatu:'无'}}</span></p>
+                        <p>楼层状况：<span>{{form.floors?form.floors:'0'}} 层</span></p>
                     </li>
                     <li>
-                        <p>户型面积：<span>{{unitArea?unitArea:'0'}} m<sup>2</sup></span></p>
+                        <p>户型面积：<span>{{form.apartmentArea?form.apartmentArea:'0'}} m<sup>2</sup></span></p>
                     </li>
                     <li>
-                        <p>地铁交通：<span>{{transtion?transtion:'无'}}</span></p>
+                        <p>地铁交通：<span>{{form.label?form.label:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>楼盘位置：<span>{{location?location:'无'}}</span></p>
+                        <p>楼盘位置：<span>{{form.address?form.address:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>佣金比例：<span>{{commision?commision:'无'}}</span></p>
+                        <p>佣金比例：<span>{{form.commission?form.commission:'0'}} 元</span></p>
                     </li>
                     <li>
-                        <p>标签：<span>{{tag?tag:'无'}}</span></p>
+                        <p>标签：<span>{{form.label?form.label:'无'}}</span></p>
                     </li>
                 </ul>
             </div>
             <div class="basic attach">
                 <h4>周边配置</h4>
-                <p class="intro">{{match?match:'无'}}</p>
+                <p class="intro">{{form.surroundings?form.surroundings:'无'}}</p>
             </div>
             <div class="basic attach">
                 <h4>项目简介</h4>
-                <p class="intro">{{proIntro?proIntro:'无'}}</p>
+                <p class="intro">{{form.introduction?form.introduction:'无'}}</p>
             </div>
             <div class=" pic">
                 <h4>轮播图</h4>
@@ -159,10 +159,10 @@
             <div class="basic attach">
                 <ul>
                     <li>
-                        <p>录入员工：<span>{{entryPerson?entryPerson:'无'}}</span></p>
+                        <p>录入员工：<span>{{form.recorder?form.recorder:'无'}}</span></p>
                     </li>
                     <li>
-                        <p>电话：<span>{{phone?phone:'无'}}</span></p>
+                        <p>电话：<span>{{form.recorderPhone?form.recorderPhone:'无'}}</span></p>
                     </li>
                 </ul>
             </div>
@@ -175,31 +175,7 @@
 export default {
     data(){
         return{
-            broker:'',//报盘经纪人
-            brokerTel:'',//经纪人电话
-            entryTime:'',//录入时间
-            city:'',//城市
-            area:'',//区域
-            houseName:'',//楼盘名称
-            currentStatu:'',//当前状态
-            developer:'',//开发商
-            address:'',//环线位置
-            cover:'',//占地面积
-            buildUp:'',//建筑面积
-            property:'',//楼盘性质
-            limit:'',//产权年限
-            plot:'',//容积率
-            green:'',//绿化率
-            building:'',//楼栋总数
-            totalHolds:'',//总户数
-            floorStatu:'',//楼层状况
-            unitArea:'',//房型面积
-            transtion:'',//地铁交通
-            location:'',//楼盘位置
-            commision:'',//佣金比例
-            tag:'',//标签
-            match:'',//周边配置
-            proIntro:'',//项目简介
+            form:{},
             sows:[
                 {
                     sowingImg:'../../../static/images/a1.png'
@@ -215,8 +191,8 @@ export default {
                     typeImg:'../../../static/images/a1.png'
                 }
             ],//户型图
-            entryPerson:'',//录入员工
-            phone:'',//电话
+            property:'',
+            disabled:false,
             isGround:true,
             isUnder:false,
             recordData:[
@@ -238,6 +214,21 @@ export default {
     },
     methods:{
         getNewDetail(){
+            this.$get('houseSource/getHouseDetailsByType',{
+                id: this.$route.query.id,
+                houseSourceType: this.$route.query.type
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.form = res.data;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
             console.log('获取新盘详情')
         },
         // 返回
@@ -250,12 +241,46 @@ export default {
         },
         // 置顶
         top(){
-            alert("确定将此置顶？")
+            this.$confirm('此操作置顶该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                    this.$get('houseSource/topHouseSourcesByNew',{
+                        houseSourcesId:this.$route.query.id
+                    }).then(res=>{
+                        console.log(res);
+                        if(res.code == 0 || res.code == 200){
+                            this.$message({
+                                type: 'success',
+                                message: '置顶成功!'
+                            });
+                            this.disabled = true;
+                            this.getNewDetail()
+                        }else{
+                            this.$messge({
+                                message:res.msg,
+                                type:'error',
+                                duration:1000
+                            })
+                        }
+                    })
+                
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '置顶已取消'
+                });          
+            });
         },
         // 编辑
-        edit(){
+        edit(val){
+            console.log(this.$route.query.id)
             this.$router.push({
-                path:'/modifyEdit'
+                path:'/modifyEdit',
+                query:{
+                    id: this.$route.query.id
+                }
             })
         }
     }

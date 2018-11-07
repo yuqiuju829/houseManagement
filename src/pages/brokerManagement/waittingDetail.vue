@@ -4,43 +4,43 @@
          <header>
             <el-button type="primary" plain @click="goBack">返回</el-button>
             <div class="personnel" v-if="isPersonnel">
-                <p>操作员工：<span>{{staff?staff:'无'}}</span></p>
-                <p>电话：<span>{{staffTel?staffTel:'无'}}</span></p>
+                <p>操作员工：<span>{{form.staff ? form.staff : '无'}}</span></p>
+                <p>电话：<span>{{form.staffTel ? form.staffTel : '无'}}</span></p>
             </div>
         </header>
         <!-- 头部 -->
         <!-- 内容 -->
         <div class="content">
             <h4>申请资料</h4>
-            <p class="apply">申请时间：<span>{{applyTime?applyTime:'无'}}</span></p>
+            <p class="apply">申请时间：<span>{{form.registerDate? form.registerDate:'无'}}</span></p>
             <ul>
                 <li>
                     <label>姓名：</label>
-                    <span>{{name?name:'无'}}</span>
+                    <span>{{form.nickname? form.nickname:'无'}}</span>
                 </li>
                 <li>
                     <label>电话：</label>
-                    <span>{{tel?tel:"无"}}</span>
+                    <span>{{form.phone? form.phone:"无"}}</span>
                 </li>
                 <li>
                     <label>推荐人：</label>
-                    <span>{{referee?referee:'无'}}</span>
+                    <span>{{form.referee? form.referee:'无'}}</span>
                 </li>
                 <li>
                     <label>性别：</label>
-                    <span>{{sex?sex:'无'}}</span>
+                    <span>{{form.gender == 1?'男':'女'}}</span>
                 </li>
                 <li>
                     <label>年龄：</label>
-                    <span>{{age?age:'0'}} 岁</span>
+                    <span>{{form.age?form.age:'0'}} 岁</span>
                 </li>
                 <li>
                     <label>主业务资料：</label>
-                    <span>{{city?city:'无'}}</span>
+                    <span>{{form.city?form.city:'无'}}</span>
                 </li>
                 <li>
                     <label>主业务区域：</label>
-                    <span>{{area?area:'无'}}</span>
+                    <span>{{form.area?form.area:'无'}}</span>
                 </li>
             </ul>
             <div class="button" v-if="isButtonShow">
@@ -70,16 +70,7 @@
 export default {
     data(){
         return{
-            staff:'',//操作员工
-            staffTel:'',//员工电话
-            applyTime:'',//申请时间
-            name:'',//姓名
-            tel:'',//电话
-            referee:'',//推荐人
-            sex:'',//性别
-            age:'',//年龄
-            city:'',//城市
-            area:'',//区域
+            form:{},
             dialogVisible:false,
             isAgreen:false,
             isRefuse:false,
@@ -93,7 +84,20 @@ export default {
     },
     methods:{
         getWaitterDetail(){
-            console.log('获取待审核经纪人详情');
+            this.$get('user/getUserIntroduce',{
+                id:this.$route.query.id
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.form = res.data
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:"error",
+                        duration:1000
+                    })
+                }
+            })
         },
         // 返回
         goBack(){
@@ -116,6 +120,7 @@ export default {
                 this.dialogVisible = false;
                 this.isRefuse = true;
                 this.isButtonShow = false;
+                this.getWaitterDetail()
             }
         },
         // 通过
@@ -123,6 +128,7 @@ export default {
             this.isAgreen = true;
             this.isPersonnel = true;
             this.isButtonShow = false;
+            this.getWaitterDetail()
         }
     }
 }

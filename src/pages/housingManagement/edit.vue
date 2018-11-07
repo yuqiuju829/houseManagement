@@ -78,16 +78,6 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="7">
-                        <el-form-item label="报盘经纪人：" prop="broker">
-                            <el-input v-model="ruleForm.broker" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="7">
-                        <el-form-item label="经纪人电话：" prop="tel">
-                            <el-input v-model="ruleForm.tel" clearable oninput="if(value.length > 11)value = value.slice(0, 11)"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="7">
                         <el-form-item label="佣金提成：" prop="extract">
                             <el-input v-model="ruleForm.extract" clearable>
                                 <template slot="append">元</template>
@@ -174,11 +164,11 @@
                     <el-col :span="20">
                         <el-form-item label="装修标准：" prop="radio" >
                             <el-radio-group v-model="ruleForm.radio" style="display:flex;justify-content:space-around">
-                                <el-radio-button :label="0">毛坯</el-radio-button>
-                                <el-radio-button :label="1">简单装修</el-radio-button>
-                                <el-radio-button :label="2">中等装修</el-radio-button>
-                                <el-radio-button :label="3">精装修</el-radio-button>
-                                <el-radio-button :label="4">豪华装修</el-radio-button>
+                                <el-radio-button label="毛坯">毛坯</el-radio-button>
+                                <el-radio-button label="简单装修">简单装修</el-radio-button>
+                                <el-radio-button label="中等装修">中等装修</el-radio-button>
+                                <el-radio-button label="精装修">精装修</el-radio-button>
+                                <el-radio-button label="豪华装修">豪华装修</el-radio-button>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -566,36 +556,50 @@ export default {
                             duration:1000
                         })
                     }
-                    else if(this.dynamicTags.length > 6){
-                        this.$message({
-                            message:'标签个数不得大于6个',
-                            type:'warning',
-                            duration:1000
-                        })
-                    }
-                   else if(this.ruleForm.houseFile == ''){
-                       console.log(this.showFileList)
-                        this.$message({
-                            message:'请上传楼盘展示图',
-                            type:'error',
-                            duration:1000
-                        })
-                    }
-                   else if(this.ruleForm.houseIntro == ''){
-                        this.$message({
-                            message:'请上传楼盘简介图',
-                            type:'error',
-                            duration:1000
-                        })
-                    }
-                   else if(this.ruleForm.houseType == ''){
-                        this.$message({
-                            message:'请上传户型图',
-                            type:'error',
-                            duration:1000
-                        })
-                    }
                     else{
+                        this.$post('houseSource/addHouseSourcesByNew',{
+                            buildName: this.ruleForm.name,
+                            latestActivityTime: this.ruleForm.time,
+                            developer: this.ruleForm.developers,
+                            address: this.ruleForm.address,
+                            city: this.ruleForm.city,
+                            arae: this.ruleForm.area,
+                            handRoomTime: this.ruleForm.roomTime,
+                            elevatorRoomRate: this.ruleForm.Ladder,
+                            cell: this.ruleForm.layer,
+                            owner: this.ruleForm.leader,
+                            ownerPhone: this.ruleForm.leaderTel,
+                            commission: this.ruleForm.extract,
+                            unitPrice:this.ruleForm.average,
+                            propertyYears: this.ruleForm.ageLimit,
+                            apartmentArea: this.ruleForm.unitArea,
+                            coverArea: this.ruleForm.areaCovere,
+                            buildArea: this.ruleForm.buildArea,
+                            far: this.ruleForm.volumetric,
+                            green: this.ruleForm.greenRate,
+                            parks: this.ruleForm.parkingSpace,
+                            builds: this.ruleForm.totalNumber,
+                            households: this.ruleForm.roomNumber,
+                            floors: this.ruleForm.totalFloor,
+                            decoration: this.ruleForm.radio,
+                            buildType: this.ruleForm.checkboxGroup2,
+                            surroundings: this.ruleForm.match,
+                            introduction: this.ruleForm.projectIntro,
+                            label: this.dynamicTags,
+                        }).then(res=>{
+                            console.log(res);
+                            if(res.code == 0 || res.code == 200){
+                                this.$message({
+                                    message:'新建成功，将在5秒后返回新盘列表',
+                                    type:'success'
+                                })
+                                setTimeout(()=>{
+                                    this.$router.push({
+                                        path:'/newPlate'
+                                    },5000)
+                                })
+                            }
+                        })
                          alert('submit!');
                     }
                 } else {

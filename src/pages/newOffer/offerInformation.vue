@@ -11,12 +11,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%" @change="citySearch"> 
+                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%"> 
                         <el-option
                         v-for="item in cityLists"
                         :key="item.value"
@@ -26,7 +26,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%" @change="areaSearch">
+                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%">
                         <el-option
                         v-for="item in areaLists"
                         :key="item.value"
@@ -35,10 +35,12 @@
                         </el-option>
                     </el-select>
                 </el-col>
-
+                <el-col :span="7">
+                        <el-input clearable placeholder="请输入电话" style="width:80%;margin-right:30px" v-model="phone"></el-input>
+                </el-col>
                 <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入报盘经纪人姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
@@ -110,7 +112,8 @@ export default {
             date:'',
             city:'',
             area:'',
-            text:'',
+            phone:'',
+            name:'',
             cityLists:[],
             areaLists:[],
             tableData: [

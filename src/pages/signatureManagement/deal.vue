@@ -11,12 +11,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%" @change="citySearch">
+                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%">
                         <el-option
                         v-for="item in cityLists"
                         :key="item.value"
@@ -26,7 +26,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%" @change="areaSearch">
+                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%">
                         <el-option
                         v-for="item in areaLists"
                         :key="item.value"
@@ -36,7 +36,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="audit" clearable placeholder="请选择审核状态" style="width:80%" @change="auditSearch">
+                    <el-select v-model="audit" clearable placeholder="请选择审核状态" style="width:80%">
                         <el-option
                         v-for="item in auditLists"
                         :key="item.value"
@@ -46,8 +46,11 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
+                        <el-input clearable placeholder="请输入房源编号" style="width:80%;margin-right:30px" v-model="house"></el-input>
+                </el-col>
+                <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入合同编号" style="width:80%;margin-right:30px" v-model="contract"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
@@ -63,11 +66,11 @@
                 border
                 style="width: 95%;margin:auto">
                 <el-table-column
-                prop="contractAim"
+                prop="contractNo"
                 label="合同编号">
                 </el-table-column>
                 <el-table-column
-                prop="aim"
+                prop="houseSourceNo"
                 label="房源编号">
                 </el-table-column>
                 <el-table-column
@@ -79,11 +82,11 @@
                 label="区域">
                 </el-table-column>
                 <el-table-column
-                prop="house"
+                prop="buildName"
                 label="楼盘">
                 </el-table-column>
                 <el-table-column
-                prop="amount"
+                prop="cuDealPrice"
                 label="成交金额(元)">
                 </el-table-column>
                 <el-table-column
@@ -91,12 +94,17 @@
                 label="付款类型">
                 </el-table-column>
                 <el-table-column
-                prop="time"
+                prop="recordDate"
                 label="录入时间">
                 </el-table-column>
                 <el-table-column
-                prop="record"
+                prop="status"
                 label="审核记录">
+                <template slot-scope="scope">
+                    <p v-if="scope.row.status == 1">已审核</p>
+                    <p v-if="scope.row.status == 0">未审核</p>
+                    <p v-if="scope.row.status == -1">未通过</p>
+                </template>
                 </el-table-column>
                 <el-table-column
                 fixed="right"
@@ -128,56 +136,12 @@ export default {
             city:'',
             area:'',
             audit:'',
-            text:'',
+            house:'',
+            contract:'',
             cityLists:[],
             areaLists:[],
             auditLists:[],
-            tableData: [
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    city:'成都',
-                    area: '高新',
-                    house: '成都',
-                    amount:'高新',
-                    payType:'2000-3000',
-                    time:'卖',
-                    record:'15983735209',
-                },
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    city:'成都',
-                    area: '高新',
-                    house: '成都',
-                    amount:'高新',
-                    payType:'2000-3000',
-                    time:'卖',
-                    record:'15983735209',
-                },
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    city:'成都',
-                    area: '高新',
-                    house: '成都',
-                    amount:'高新',
-                    payType:'2000-3000',
-                    time:'卖',
-                    record:'15983735209',
-                },
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    city:'成都',
-                    area: '高新',
-                    house: '成都',
-                    amount:'高新',
-                    payType:'2000-3000',
-                    time:'卖',
-                    record:'15983735209',
-                }
-            ],
+            tableData: [],
             brokerNum:'3000',
             currentNum:'200',
             currentPage:1,
@@ -192,6 +156,26 @@ export default {
     },
     methods:{
         getDeal(){
+            this.$post('sign/getSignByWeb',{
+                dealType:2,
+                beginDate: this.$getTimes(this.date[0]) ? this.$getTimes(this.date[0]) : null,
+                endDate: this.$getTimes(this.date[1]) ? this.$getTimes(this.date[1]) : null,
+                houseSourceNo: this.house ? this.house : null,
+                contractNo: this.contract ?this.contract : null,
+                status: this.audit ? this.audit : null
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.tableData = res.data.list;
+                    this.total = res.data.list.length;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
             console.log('获取买卖信息')
         },
         getCities(){
@@ -199,22 +183,6 @@ export default {
         },
         getAreas(){
             console.log('获取区域')
-        },
-        // 日期查询
-        dateSearch(){
-            console.log('日期搜索')
-        },
-        // 城市查询
-        citySearch(){
-            console.log('城市搜索')
-        },
-        // 区域查询
-        areaSearch(){
-            console.log('区域搜索')
-        },
-        // 状态查询
-        auditSearch(){
-            console.log('按审核状态搜索')
         },
         // 条件查询
         search(){

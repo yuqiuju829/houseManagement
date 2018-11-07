@@ -30,6 +30,7 @@ import Server from './server/index.js'
 Vue.prototype.$get = Server.get;
 Vue.prototype.$post = Server.post;
 Vue.prototype.$delete = Server.deleted;
+Vue.prototype.$getTimes = Server.getTimes;
 
 Vue.config.productionTip = false
 
@@ -37,14 +38,13 @@ Vue.config.productionTip = false
 //   if(to.path === "/"){
 //     next()
 //   }else{
-//     if(JSON.parse(sessionStorage.getItem("userInfo"))){
-//       alert(2)
+//     if(!JSON.parse(localStorage.getItem("userInfo"))){
 //       next()
 //     }
 //     else{
-//       alert(3)
+//       alert(1)
 //       next({
-//         path: "/home"
+//         path: "/"
 //       })
 //     }
 //   }

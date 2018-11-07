@@ -11,12 +11,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%" @change="citySearch">
+                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%">
                         <el-option
                         v-for="item in cityLists"
                         :key="item.value"
@@ -26,7 +26,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%" @change="areaSearch">
+                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%">
                         <el-option
                         v-for="item in areaLists"
                         :key="item.value"
@@ -36,36 +36,31 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="shelf" clearable placeholder="请选择上架状态" style="width:80%" @change="shelfSearch">
+                    <el-select v-model="shelf" clearable placeholder="请选择上架状态" style="width:80%">
                         <el-option label="上架中" value="1"></el-option>
                         <el-option label="下架中" value="2"></el-option>
                     </el-select>
                 </el-col>
                 <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入房源编号" style="width:80%;margin-right:30px" v-model="text"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
-                <el-col :span="3">
-                    <el-button type="warning" @click="build" style="margin-left:30px">新建</el-button>
-                </el-col>
-
             </el-row>
         </header>
-        <div class="num">
-            <p>房源总数：<span>{{brokerNum}}人</span></p>
-            <p>当前统计总量：<span>{{currentNum}}人</span></p>
-        </div>
+        <div class="banner">
+            <div class="num">
+                <p>房源总数：<span>{{brokerNum}}人</span></p>
+                <p>当前统计总量：<span>{{currentNum}}人</span></p>
+            </div>
+            <el-button type="warning" @click="build" style="margin-left:30px;margin-top:20px">新建</el-button>
+        </div>   
         <div class="table">
             <el-table
                 :data="tableData"
                 border
                 style="width: 95%;margin:auto">
-                <el-table-column
-                prop="aim"
-                label="房源编号">
-                </el-table-column>
                 <el-table-column
                 prop="city"
                 label="所属城市">
@@ -75,32 +70,44 @@
                 label="区域">
                 </el-table-column>
                 <el-table-column
-                prop="house"
+                prop="buildName"
                 label="新盘名称">
                 </el-table-column>
                 <el-table-column
-                prop="unit"
+                prop="recordTime"
+                label="开盘时间">
+                </el-table-column>
+                <el-table-column
+                prop="developer"
                 label="开发商">
                 </el-table-column>
                 <el-table-column
-                prop="room"
+                prop="coverArea"
                 label="占地面积(m²)">
                 </el-table-column>
                 <el-table-column
-                prop="houseType"
+                prop="square"
                 label="建筑面积(m²)">
                 </el-table-column>
                 <el-table-column
-                prop="mouthPrice"
+                prop="builds"
                 label="楼栋总数(栋)">
                 </el-table-column>
                 <el-table-column
-                prop="payType"
+                prop="cell"
                 label="总户数(户)">
                 </el-table-column>
                 <el-table-column
-                prop="houseStatus"
+                prop="commission"
                 label="佣金范围(元)">
+                </el-table-column>
+                <el-table-column
+                prop="recorder"
+                label="经纪人">
+                </el-table-column>
+                <el-table-column
+                prop="recorderPhone"
+                label="电话">
                 </el-table-column>
                 <el-table-column
                 fixed="right"
@@ -135,21 +142,7 @@ export default {
             text:'',//条件查询
             cityLists:[],
             areaLists:[],
-            tableData: [
-                {
-                    aim:'12315475465',
-                    city:'成都',
-                    area: '高新',
-                    house: '成都',
-                    unit:'高新',
-                    room:'2000-3000',
-                    houseType:'卖',
-                    mouthPrice:'黄大米',
-                    payType:'15983735209',
-                    price:"黄小米",
-                    houseStatus:'上架中'
-                }
-            ],
+            tableData: [],
             brokerNum:'3000',
             currentNum:'200',
             currentPage:1,
@@ -164,7 +157,29 @@ export default {
     },
     methods:{
         getNews(){
-            console.log('获取新盘')
+            this.$post('houseSource/getHouseSourcesListByWeb',{
+                houseSourceType: 3,
+                beginDate: this.$getTimes(this.date[0]) ? this.$getTimes(this.date[0]) : null,
+                endDate: this.$getTimes(this.date[1]) ? this.$getTimes(this.date[1]) : null,
+                city: this.city ? this.city : null,
+                area: this.area ? this.area : null,
+                houseSourceNo: this.text ? this.text : null,
+                status: this.shelf ? this.shelf : null,
+                pageNum: this.currentPage ? this.currentPage : 1,
+                pageSize:this.pageSize ? this.pageSize : 20
+            }).then(res=>{
+                console.log(res);
+                if(res.code == 0 || res.code == 200){
+                    this.tableData = res.data.list;
+                    this.total = res.data.list.length;
+                }else{
+                    this.$message({
+                        message:res.msg,
+                        type:'error',
+                        duration:1000
+                    })
+                }
+            })
         },
         getCities(){
             console.log('获取城市')
@@ -172,30 +187,20 @@ export default {
         getAreas(){
             console.log('获取区域')
         },
-        // 日期查询
-        dateSearch(){
-            console.log('日期搜索')
-        },
-        // 城市查询
-        citySearch(){
-            console.log('城市搜索')
-        },
-        // 区域查询
-        areaSearch(){
-            console.log('区域搜索')
-        },
-        // 状态查询
-        shelfSearch(){
-            console.log('按上架状态搜索')
-        },
         // 条件查询
         search(){
-            console.log('按条件搜索')
+            this.currentPage = 1;
+            this.getNews(this.currentPage)
         },
         // 查看详情
-        handleClick(){
+        handleClick(val){
+            console.log(val.cId)
             this.$router.push({
-                path:'/newDetail'
+                path:'/newDetail',
+                query:{
+                    id: val.cId,
+                    type: 3
+                }
             })
         },
         // 新建
@@ -245,11 +250,14 @@ header{
     margin-right: 100px;
 }
 /* 头部 */
+.banner{
+    width:100%;
+    display:flex
+}
 .num{
     width:100%;
     padding-left:3%;
     box-sizing: border-box;
-
 }
 .num p{
     font-size: 20px;

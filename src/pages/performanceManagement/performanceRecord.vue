@@ -11,12 +11,12 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         style="width:80%"
-                        @blur="dateSearch" clearable>
+                        clearable>
                         </el-date-picker>
                     </div>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%" @change="citySearch">
+                    <el-select v-model="city" clearable placeholder="请选择城市" style="width:80%">
                         <el-option
                         v-for="item in cityLists"
                         :key="item.value"
@@ -26,7 +26,7 @@
                     </el-select>
                 </el-col>
                 <el-col :span="7">
-                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%" @change="areaSearch">
+                    <el-select v-model="area" clearable placeholder="请选择区域" style="width:80%">
                         <el-option
                         v-for="item in areaLists"
                         :key="item.value"
@@ -35,10 +35,12 @@
                         </el-option>
                     </el-select>
                 </el-col>
-
+                <el-col :span="7">
+                        <el-input clearable placeholder="请输入电话" style="width:80%;margin-right:30px" v-model="phone"></el-input>
+                </el-col>
                 <el-col :span="7">
                     <div class="search">
-                        <el-input clearable placeholder="请输入电话/昵称" style="width:80%;margin-right:30px" v-model="text"></el-input>
+                        <el-input clearable placeholder="请输入姓名" style="width:80%;margin-right:30px" v-model="name"></el-input>
                         <el-button type="primary" @click="search">搜索</el-button>
                     </div>
                 </el-col>
@@ -129,69 +131,13 @@ export default {
             date:'',
             city:'',
             area:'',
-            text:'',
+            phone:'',
+            name:'',
             cityLists:[],
             areaLists:[],
-            tableData: [
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    source:'2000-3000',
-                    time:'卖',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    staff:'2313',
-                    staffTel:'454545'
-                },
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    source:'2000-3000',
-                    time:'卖',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    staff:'2313',
-                    staffTel:'454545'
-                },
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    source:'2000-3000',
-                    time:'卖',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    staff:'2313',
-                    staffTel:'454545'
-                },
-                {
-                    contractAim:'黄大米',
-                    aim:'12315465465',
-                    name:'成都',
-                    regTel: '高新',
-                    amount:'高新',
-                    source:'2000-3000',
-                    time:'卖',
-                    employees:'15983735209',
-                    empTel:'12132232321',
-                    entryTime:'44545546',
-                    staff:'2313',
-                    staffTel:'454545'
-                }
-            ],
+            tableData: [],
             currentPage:1,
-            pageSize:10,
+            pageSize:20,
             total:100,
             isClear:true,
             isSettle:true
@@ -204,20 +150,20 @@ export default {
     },
     methods:{
         getRecord(){
-            this.$post('performance/queryByRecord',{
+            // this.$post('performance/queryByRecord',{
 
-            }).then(res=>{
-                console.log(res);
-                if(res.code == 0 || res.code == 200){
+            // }).then(res=>{
+            //     console.log(res);
+            //     if(res.code == 0 || res.code == 200){
 
-                }else{
-                    this.$message({
-                        message:res.msg,
-                        type:'error',
-                        duration:1000
-                    })
-                }
-            })
+            //     }else{
+            //         this.$message({
+            //             message:res.msg,
+            //             type:'error',
+            //             duration:1000
+            //         })
+            //     }
+            // })
             console.log('业绩记录')
         },
         getCities(){
@@ -225,15 +171,6 @@ export default {
         },
         getAreas(){
             console.log('获取区域')
-        },
-        dateSearch(){
-            console.log("日期搜索")
-        },
-        citySearch(){
-            console.log("城市搜索")
-        },
-        areaSearch(){
-            console.log("区域搜索")
         },
         search(){
             console.log("按条件搜索")

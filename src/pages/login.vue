@@ -2,7 +2,7 @@
     <div id="login">
         <!-- start logo标题 -->
         <div class="logo">
-        	<img src="../../static/images/flower.jpg" id="logoImg"/>
+        	<!-- <img src="../../static/images/flower.jpg" id="logoImg"/> -->
 			<p>千子居后台管理系统</p>
         </div>
         <!-- end logo标题 -->
